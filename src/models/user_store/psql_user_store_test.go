@@ -20,7 +20,7 @@ func TestUserPsqlStore(t *testing.T) {
 			t.Run("GetUser returns User", func(t *testing.T) {
 				uuId := uuid.New().String()
 
-				_, err := db.Exec(`insert into users (id) values ($1);`, uuId)
+				_, err := db.Exec(`insert into users (id, balance_e5) values ($1, $2);`, uuId, 100)
 				if err != nil {
 					t.Error(err)
 				}
@@ -30,7 +30,7 @@ func TestUserPsqlStore(t *testing.T) {
 					t.Errorf("GetUser failed: %s\n", getErr)
 				}
 
-				expectedUser := User{ID: uuId}
+				expectedUser := User{ID: uuId, BalanceE5: 100}
 
 				compareUsers(t, expectedUser, user)
 			})
@@ -48,7 +48,7 @@ func TestUserPsqlStore(t *testing.T) {
 		utils.WithParallel(wg, func() {
 			t.Run("Create user creates User", func(t *testing.T) {
 				id := uuid.New().String()
-				createdUser, err := store.CreateUser(CreateUserRequest{ID: id})
+				createdUser, err := store.CreateUser(CreateUserRequest{ID: id, BalanceE5: 100})
 				if err != nil {
 					t.Errorf("CreateUser failed: %s\n", err)
 				}
@@ -82,7 +82,7 @@ func TestUserPsqlStore(t *testing.T) {
 func compareUsers(t *testing.T, expected, actual User) {
 	t.Helper()
 
-	if actual.ID != expected.ID {
+	if actual.ID != expected.ID || actual.BalanceE5 != expected.BalanceE5 {
 		t.Errorf("Expected %+v, got %+v\n", expected, actual)
 	}
 }
