@@ -6,6 +6,3 @@ create table if not exists settings (
     payout_percent smallint not null default 0,
     updated_at timestamp not null default CURRENT_TIMESTAMP
 );
-
--- +goose Down
-drop table huds;

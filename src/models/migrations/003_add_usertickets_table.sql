@@ -7,6 +7,3 @@ create table if not exists usertickets (
     constraint foreign key(user_id) references users(id),
     constraint foreign key(ticket_id) references tickets(id)
 );
-
--- +goose Down
-drop table huds;

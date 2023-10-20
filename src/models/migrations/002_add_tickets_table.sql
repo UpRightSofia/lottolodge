@@ -7,6 +7,3 @@ create table if not exists tickets (
     updated_at timestamp not null default CURRENT_TIMESTAMP,
     constraint primary key(id)
 );
-
--- +goose Down
-drop table huds;

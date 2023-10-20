@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-create table if not exists pools (
+create table if not exists winnings (
     id uuid not null default uuid_generate_v4(),
     user_id uuid not null,
     ticket_id uuid not null,
@@ -12,6 +12,3 @@ create table if not exists pools (
     constraint foreign key(ticket_id) references tickets(id),
     constraint foreign key(pool_id) references pools(id)
 );
-
--- +goose Down
-drop table huds;
