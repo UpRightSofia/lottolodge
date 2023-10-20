@@ -55,7 +55,7 @@ func TestTicketPsqlStore(t *testing.T) {
 				userID := createUser(*userStore, t)
 				request := CreateTicketRequest{
 					UserID:       userID,
-					Details:      sql.NullString{String: `{"key": "value"}`, Valid: true},
+					Details:      `{"key": "value"}`,
 					IsHandPicked: true,
 				}
 
