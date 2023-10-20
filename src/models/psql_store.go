@@ -8,6 +8,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/UpRightSofia/lottolodge/src/models/config"
+	"github.com/UpRightSofia/lottolodge/src/models/user_store"
 )
 
 func NewPostgresStore(dbConfig config.DBConfig, testBlock func(*PostgresStore)) {
@@ -19,17 +20,15 @@ func NewPostgresStore(dbConfig config.DBConfig, testBlock func(*PostgresStore)) 
 
 	testBlock(
 		&PostgresStore{
-			db: db,
-			// HudStore:  hud_store.NewHudPostgresStore(db),
-			// UserStore: user_store.NewUserPostgresStore(db),
+			db:        db,
+			UserStore: user_store.NewUserPostgresStore(db),
 		},
 	)
 }
 
 type PostgresStore struct {
-	db *sql.DB
-	// HudStore  *hud_store.HudPostgresStore
-	// UserStore *user_store.UserPostgresStore
+	db        *sql.DB
+	UserStore *user_store.UserPostgresStore
 }
 
 func (s *PostgresStore) GetDB() *sql.DB {
