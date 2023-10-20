@@ -24,6 +24,20 @@ func TestSettingPsqlStore(t *testing.T) {
 					t.Error(err)
 				}
 
+				ticketPrizeE5 = 3
+				payoutPercent = 4
+				_, err = db.Exec(`insert into settings (ticket_prize_e5, payout_percent) values ($1, $2);`, ticketPrizeE5, payoutPercent)
+				if err != nil {
+					t.Error(err)
+				}
+
+				ticketPrizeE5 = 5
+				payoutPercent = 6
+				_, err = db.Exec(`insert into settings (ticket_prize_e5, payout_percent) values ($1, $2);`, ticketPrizeE5, payoutPercent)
+				if err != nil {
+					t.Error(err)
+				}
+
 				setting, getErr := store.GetLastSetting()
 				if getErr != nil {
 					t.Errorf("GetLastSetting failed: %s\n", getErr)
@@ -49,28 +63,13 @@ func TestSettingPsqlStore(t *testing.T) {
 				compareSetting(t, createdSetting, setting)
 			})
 		})
-
-		// utils.WithParallel(wg, func() {
-		// 	t.Run("CreateUser returns error if User with same userId exists", func(t *testing.T) {
-		// 		id := uuid.New().String()
-		// 		_, err := store.CreateUser(CreateUserRequest{ID: id})
-		// 		if err != nil {
-		// 			t.Errorf("CreateUser failed: %s\n", err)
-		// 		}
-
-		// 		_, err = store.CreateUser(CreateUserRequest{ID: id})
-		// 		if err == nil {
-		// 			t.Errorf("CreateUser should've failed")
-		// 		}
-		// 	})
-		// })
 	})
 }
 
 func compareSetting(t *testing.T, expected, actual Setting) {
 	t.Helper()
 
-	if actual.PayoutPercent != expected.PayoutPercent &&
+	if actual.PayoutPercent != expected.PayoutPercent ||
 		actual.TicketPrizeE5 != expected.TicketPrizeE5 {
 		t.Errorf("Expected %+v, got %+v\n", expected, actual)
 	}
