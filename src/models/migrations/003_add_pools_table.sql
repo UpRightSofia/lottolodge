@@ -1,11 +1,11 @@
 -- +goose Up
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-create table if not exists users (
+create table if not exists pools (
     id uuid not null default uuid_generate_v4(),
+    details json not null,
     updated_at timestamp not null default CURRENT_TIMESTAMP,
-    balance_e5 bigint not null default 0,
-    constraint pk_users primary key (id)
+    constraint pk_pools primary key (id)
 );
 
 -- +goose Down
-drop table users;
+drop table pools;
