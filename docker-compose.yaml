@@ -1,23 +1,48 @@
 version: '1'
 services:
-  ledger:
-    image: ledger:latest
+  backend:
+    image: lottolodge:latest
     ports:
       - 80:80
     restart: on-failure
     volumes:
       - app:/usr/src/app/
-    environment:
-      - LOCAL=true
+    depends_on:
+      - postgres
     networks:
-      - ledger
-    container_name: ledger
+      - postgres
+  postgres:
+    image: postgres:15.3
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - "5050:81"
+    networks:
+      - postgres
+    restart: unless-stopped
 
 volumes:
   app:
   db:
 
-
+    # Networks to be created to facilitate communication between containers
 networks:
-  ledger:
+  postgres:
     driver: bridge

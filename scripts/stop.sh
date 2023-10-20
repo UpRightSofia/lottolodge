@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose -p ledger down
+docker-compose -p lottolodge down

@@ -11,7 +11,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR /app
 
 # Copy go mod and sum files
-COPY go.mod ./
+COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and the go.sum files are not changed
 RUN go mod download
@@ -33,9 +33,12 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .
 
+# Copy the migrations directory from the previous stage to the /app directory inside the container
+COPY --from=builder /app/src/models/migrations ./src/models/migrations
+
 EXPOSE 80
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=2 CMD wget --quiet --tries=1 --spider http://localhost:80/health || exit 1
+HEALTHCHECK CMD wget --quiet --tries=1 --spider http://localhost:80/health || exit 1
 
 #Command to run the executable
 CMD ["./main"]
