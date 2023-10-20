@@ -6,7 +6,7 @@ create table if not exists winnings (
     ticket_id uuid not null,
     pool_id uuid not null,
     prize_e5 bigint not null default 0,
-    updated_at timestamp not null default CURRENT_TIMESTAMP,
+    updated_at timestamptz not null default CURRENT_TIMESTAMP,
     constraint pk_winnings primary key (id),
     constraint fk_users foreign key (user_id) references users (id),
     constraint fk_tickets foreign key (ticket_id) references tickets (id),
