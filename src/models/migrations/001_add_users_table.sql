@@ -6,3 +6,6 @@ create table if not exists users (
     balance_e5 bigint not null default 0,
     constraint primary key(id, updated_at)
 );
+
+-- +goose Down
+drop table users;

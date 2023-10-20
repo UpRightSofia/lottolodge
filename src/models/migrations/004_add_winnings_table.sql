@@ -12,3 +12,6 @@ create table if not exists winnings (
     constraint foreign key(ticket_id) references tickets(id),
     constraint foreign key(pool_id) references pools(id)
 );
+
+-- +goose Down
+drop table winnings;
