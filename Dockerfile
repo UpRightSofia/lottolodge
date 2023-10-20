@@ -36,7 +36,7 @@ COPY --from=builder /app/.env .
 # Copy the migrations directory from the previous stage to the /app directory inside the container
 COPY --from=builder /app/src/models/migrations ./src/models/migrations
 
-EXPOSE 80
+EXPOSE 80 8080
 
 HEALTHCHECK CMD wget --quiet --tries=1 --spider http://localhost:80/health || exit 1
 

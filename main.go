@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
+	"github.com/UpRightSofia/lottolodge/src/handlers/tickets"
 	"github.com/UpRightSofia/lottolodge/src/models"
 	"github.com/UpRightSofia/lottolodge/src/models/config"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/pressly/goose"
 )
@@ -34,12 +37,27 @@ func main() {
 			log.Fatalf("Failed to run migrations: %v", err)
 		}
 
-		httpMux := http.NewServeMux()
+		healthRouter := mux.NewRouter()
+		appRouter := mux.NewRouter()
 
-		httpMux.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		healthRouter.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 		}))
 
-		log.Fatal(http.ListenAndServe(":80", httpMux))
+		_ = tickets.NewServer(*store, appRouter)
+
+		wg := &sync.WaitGroup{}
+		wg.Add(1)
+		go func() {
+			log.Fatal(http.ListenAndServe(":80", healthRouter))
+			wg.Done()
+		}()
+		wg.Add(1)
+		go func() {
+			log.Fatal(http.ListenAndServe(":8080", appRouter))
+			wg.Done()
+		}()
+		wg.Wait()
 	})
+
 }
