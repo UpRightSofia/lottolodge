@@ -1,7 +1,3 @@
-# Ledger
-
-Loan Ledger
-
 ### Installation
 
 copy `.env.example` to `.env` and edit the values

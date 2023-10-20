@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Replace the image name and tag with version + commit SHA
-REPOSITORY_URL="ledger"
+REPOSITORY_URL="lottolodge"
 
 # Get the script directory
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose -p ledger up -d 
+docker-compose -p lottolodge up -d 
