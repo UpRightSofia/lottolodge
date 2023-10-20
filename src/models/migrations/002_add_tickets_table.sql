@@ -1,10 +1,11 @@
 -- +goose Up
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-create table if not exists users (
+create table if not exists tickets (
     id uuid not null default uuid_generate_v4(),
+    details JSON not null,
+    is_hand_picked boolean not null default false,
     updated_at timestamp not null default CURRENT_TIMESTAMP,
-    balance_e5 bigint not null default 0,
-    constraint primary key(id, updated_at)
+    constraint primary key(id)
 );
 
 -- +goose Down
