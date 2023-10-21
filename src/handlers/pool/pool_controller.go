@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+
+	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
 )
 
 type TicketDetails struct {
