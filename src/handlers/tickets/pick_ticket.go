@@ -30,7 +30,7 @@ func isClientError(err error) bool {
 }
 
 type Ticket struct {
-	UserUUID      string             `json:"user_id"`
+	UserUUID      string                     `json:"user_id"`
 	TicketDetails ticket_store.TicketDetails `json:"ticket_details"`
 }
 
@@ -229,8 +229,8 @@ func (s *server) pickTickets(user_id string) ([]ticket_store.CreateTicketRequest
 func (s *server) returnPickedTickets() http.HandlerFunc {
 
 	type PickedTicketsResponse struct {
-		Tickets        []pool.TicketDetails `json:"tickets"`
-		MaximumTickets int64                `json:"maximum_tickets"`
+		Tickets        []ticket_store.TicketDetails `json:"tickets"`
+		MaximumTickets int64                        `json:"maximum_tickets"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -273,12 +273,12 @@ func (s *server) returnPickedTickets() http.HandlerFunc {
 			return
 		}
 
-		var ticketDetails []pool.TicketDetails
+		var ticketDetails []ticket_store.TicketDetails
 		for _, ticket := range tickets {
 			if ticket.Details.Valid {
 				detailsString := ticket.Details.String
 
-				var ticketDetail pool.TicketDetails
+				var ticketDetail ticket_store.TicketDetails
 				err := json.Unmarshal([]byte(detailsString), &ticketDetail)
 				if err != nil {
 					http.Error(w, "Failed to unmarshal ticket", http.StatusInternalServerError)
