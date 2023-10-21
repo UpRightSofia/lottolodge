@@ -9,7 +9,6 @@ type Pool struct {
 	ID        string         `json:"id"`
 	Details   sql.NullString `json:"details"`
 	CreatedAt time.Time      `json:"created_at"`
-	PickedAt  time.Time      `json:"picked_at"`
 	IsActive  bool           `json:"is_active"`
 }
 

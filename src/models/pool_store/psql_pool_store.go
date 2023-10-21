@@ -2,7 +2,6 @@ package pool_store
 
 import (
 	"database/sql"
-	"errors"
 	"log"
 )
 
@@ -15,7 +14,7 @@ func NewPoolPostgresStore(db *sql.DB) *PoolPostgresStore {
 func (s *PoolPostgresStore) GetPool(id string) (Pool, error) {
 	var pool Pool
 
-	err := s.db.QueryRow(`select id, details, created_at, picked_at, is_active from pools where id = $1`, id).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, pool.IsActive, pool.PickedAt)
+	err := s.db.QueryRow(`select id, details, created_at, is_active from pools where id = $1`, id).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
 
 	if err != nil {
 		log.Println(err)
@@ -40,11 +39,27 @@ func (s *PoolPostgresStore) GetTodayPool() (Pool, error) {
 func (s *PoolPostgresStore) CreatePool(request CreatePoolRequest) (Pool, error) {
 	var pool Pool
 
-	err := s.db.QueryRow(`insert into pools (details) values ($1) returning id, details, updated_at`, request.Details).Scan(&pool.ID, &pool.Details, &pool.CreatedAt)
+	err := s.db.QueryRow(`insert into pools (details) values ($1) returning id, details, created_at, is_active`, request.Details).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
 
 	if err != nil {
-		return pool, errors.New("unable to create pool")
+		return pool, err
 	}
 
 	return pool, nil
+}
+
+func (s *PoolPostgresStore) MarkPoolAsDone(id string, details string) (Pool, error) {
+
+	pool, err := s.GetPool(id)
+	if err != nil {
+		return pool, err
+	}
+
+	var updatedPool Pool
+	err = s.db.QueryRow(`UPDATE pools SET is_active = false, details = $1 WHERE id = $2 RETURNING id, details, created_at, is_active`, details, pool.ID).Scan(&updatedPool.ID, &updatedPool.Details, &updatedPool.CreatedAt, &updatedPool.IsActive)
+	if err != nil {
+		return updatedPool, err
+	}
+
+	return updatedPool, nil
 }

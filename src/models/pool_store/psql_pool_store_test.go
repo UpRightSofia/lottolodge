@@ -34,8 +34,9 @@ func TestPoolPsqlStore(t *testing.T) {
 
 				// The UpdatedAt field will be set to the current time when the record is inserted, so we don't set it here.
 				expectedPool := Pool{
-					ID:      uuId,
-					Details: details,
+					ID:       uuId,
+					Details:  details,
+					IsActive: true,
 					// UpdatedAt: This field will be set by the database, so we can skip it in this comparison or handle it separately.
 				}
 
@@ -62,12 +63,40 @@ func TestPoolPsqlStore(t *testing.T) {
 				comparePools(t, createdPool, pool)
 			})
 		})
+
+		utils.WithParallel(wg, func() {
+			t.Run("Mark pool as finished updates relevant fields", func(t *testing.T) {
+				request := CreatePoolRequest{
+					Details: `{"key": "value1"}`,
+				}
+
+				createdPool, err := store.CreatePool(request)
+				if err != nil {
+					t.Errorf("CreatePool failed: %s\n", err)
+				}
+
+				pool, err := store.MarkPoolAsDone(createdPool.ID, `{"key": "value"}`)
+				if err != nil {
+					t.Errorf("MarkPoolAsDone failed: %s\n", err)
+				}
+
+				expectedPool := Pool{
+					ID:       createdPool.ID,
+					Details:  sql.NullString{String: `{"key": "value"}`, Valid: true},
+					IsActive: false,
+				}
+
+				comparePools(t, expectedPool, pool)
+			})
+		})
 	})
 }
 
 func comparePools(t *testing.T, expected, got Pool) {
 	if expected.ID != got.ID ||
-		expected.Details.String != got.Details.String {
+		expected.Details.Valid != got.Details.Valid ||
+		expected.Details.String != got.Details.String ||
+		expected.IsActive != got.IsActive {
 		t.Errorf("Expected %v, got %v", expected, got)
 	}
 }
