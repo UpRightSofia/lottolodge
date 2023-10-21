@@ -83,6 +83,54 @@ func TestWinningPsqlStore(t *testing.T) {
 				compareWinnings(t, createdWinning, winning)
 			})
 		})
+
+		utils.WithParallel(wg, func() {
+			t.Run("GetWinningsByUserAndPool returns Winnings", func(t *testing.T) {
+				userID := createUser(*userStore, t)
+				poolID := createPool(*poolStore, t)
+				ticketID := createTicket(*ticketStore, userID, poolID, t)
+				prizeE5 := int64(100)
+
+				request := CreateWinningRequest{
+					UserID:   userID,
+					TicketID: ticketID,
+					PoolID:   poolID,
+					PrizeE5:  prizeE5,
+				}
+
+				createdWinning, err := store.CreateWinning(request)
+				if err != nil {
+					t.Errorf("CreateWinning failed: %s\n", err)
+				}
+
+				ticketID1 := createTicket(*ticketStore, userID, poolID, t)
+				prizeE51 := int64(100)
+
+				request1 := CreateWinningRequest{
+					UserID:   userID,
+					TicketID: ticketID1,
+					PoolID:   poolID,
+					PrizeE5:  prizeE51,
+				}
+
+				createdWinning1, err := store.CreateWinning(request1)
+				if err != nil {
+					t.Errorf("CreateWinning failed: %s\n", err)
+				}
+
+				winnings, err := store.GetWinningsForUserAndPool(userID, poolID)
+				if err != nil {
+					t.Errorf("GetWinningsForUserAndPool failed: %s\n", err)
+				}
+
+				if len(winnings) != 2 {
+					t.Errorf("Expected 1 winning, got %d\n", len(winnings))
+				}
+
+				compareWinnings(t, createdWinning, winnings[0])
+				compareWinnings(t, createdWinning1, winnings[1])
+			})
+		})
 	})
 }
 

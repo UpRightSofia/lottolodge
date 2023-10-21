@@ -39,3 +39,22 @@ func (s *WinningPostgresStore) CreateWinning(request CreateWinningRequest) (Winn
 
 	return winning, nil
 }
+
+func (s *WinningPostgresStore) GetWinningsForUserAndPool(user_id string, pool_id string) ([]Winning, error) {
+	rows, err := s.db.Query(`select id, user_id, ticket_id, pool_id, prize_e5, updated_at from winnings where user_id = $1 and pool_id = $2`, user_id, pool_id)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var winnings []Winning
+	for rows.Next() {
+		var winning Winning
+		if err := rows.Scan(&winning.ID, &winning.UserID, &winning.TicketID, &winning.PoolID, &winning.PrizeE5, &winning.UpdatedAt); err != nil {
+			return winnings, err
+		}
+		winnings = append(winnings, winning)
+	}
+
+	return winnings, nil
+}
