@@ -10,6 +10,7 @@ type Ticket struct {
 	UserID       string         `json:"user_id"`
 	Details      sql.NullString `json:"details"` // Note: Consider using a custom type or a library that can handle JSON in Go for more advanced use-cases.
 	IsHandPicked bool           `json:"is_hand_picked"`
+	IsUsed       bool           `json:"is_used"`
 	UpdatedAt    time.Time      `json:"updated_at"`
 	PoolID       string         `json:"pool_id"`
 }
