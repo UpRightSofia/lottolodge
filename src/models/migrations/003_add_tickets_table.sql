@@ -1,6 +1,6 @@
 -- +goose Up
 create table if not exists tickets (
-    id uuid not null default uuid_generate_v4(),
+    id uuid not null default uuid_generate_v4() primary key,
     user_id uuid not null,
     pool_id uuid not null,
     details json not null,

@@ -49,12 +49,12 @@ func (s *TicketPostgresStore) GetUnusedTickets(poolID string) ([]Ticket, error) 
 
 	var tickets []Ticket
 	for rows.Next() {
-        var ticket Ticket
-        if err := rows.Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt); err != nil {
-            return tickets, err
-        }
-        tickets = append(tickets, ticket)
-    }
+		var ticket Ticket
+		if err := rows.Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt); err != nil {
+			return tickets, err
+		}
+		tickets = append(tickets, ticket)
+	}
 
 	return tickets, nil
 }
@@ -70,6 +70,25 @@ func (s *TicketPostgresStore) CreateTicket(request CreateTicketRequest) (Ticket,
 	}
 
 	return ticket, nil
+}
+
+func (s *TicketPostgresStore) GetTicketsForUser(user_id string, pool_id string) ([]Ticket, error) {
+	rows, err := s.db.Query(`select id, user_id, pool_id, details, is_hand_picked, is_used, updated_at from tickets where user_id = $1 and pool_id = $2`, user_id, pool_id)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var tickets []Ticket
+	for rows.Next() {
+		var ticket Ticket
+		if err := rows.Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt); err != nil {
+			return tickets, err
+		}
+		tickets = append(tickets, ticket)
+	}
+
+	return tickets, nil
 }
 
 func (s *TicketPostgresStore) BatchInsertTicket(requests []CreateTicketRequest) error {

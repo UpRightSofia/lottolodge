@@ -24,7 +24,7 @@ func TestTicketPsqlStore(t *testing.T) {
 				uuId := uuid.New().String()
 
 				// Sample data for insertion
-				userID := createUser(*userStore, t)                                // You'll need to set this to an appropriate value, perhaps another UUID or an existing user ID.
+				userID := createUser(*userStore, t) // You'll need to set this to an appropriate value, perhaps another UUID or an existing user ID.
 				poolID := createPool(poolStore, t)
 				details := sql.NullString{String: `{"key": "value"}`, Valid: true} // Sample JSON for demonstration
 				isHandPicked := true
@@ -58,7 +58,7 @@ func TestTicketPsqlStore(t *testing.T) {
 				uuId2 := uuid.New().String()
 
 				// Sample data for insertion
-				userID := createUser(*userStore, t)                                // You'll need to set this to an appropriate value, perhaps another UUID or an existing user ID.
+				userID := createUser(*userStore, t) // You'll need to set this to an appropriate value, perhaps another UUID or an existing user ID.
 				poolID := createPool(poolStore, t)
 				details := sql.NullString{String: `{"key": "value"}`, Valid: true} // Sample JSON for demonstration
 				isHandPicked := true
@@ -118,6 +118,80 @@ func TestTicketPsqlStore(t *testing.T) {
 				}
 
 				compareTickets(t, createdTicket, ticket)
+			})
+		})
+
+		utils.WithParallel(wg, func() {
+			t.Run("GetTicketsForUser returns tickets", func(t *testing.T) {
+				userID := createUser(*userStore, t)
+				userID2 := createUser(*userStore, t)
+				poolID := createPool(poolStore, t)
+
+				request := CreateTicketRequest{
+					UserID:       userID,
+					PoolID:       poolID,
+					Details:      `{"key": "value"}`,
+					IsHandPicked: true,
+				}
+
+				ticket, err := store.CreateTicket(request)
+				if err != nil {
+					t.Errorf("CreateTicket failed: %s\n", err)
+				}
+
+				request1 := CreateTicketRequest{
+					UserID:       userID,
+					PoolID:       poolID,
+					Details:      `{"key": "value"}`,
+					IsHandPicked: true,
+				}
+
+				ticket1, err := store.CreateTicket(request1)
+				if err != nil {
+					t.Errorf("CreateTicket failed: %s\n", err)
+				}
+
+				request2 := CreateTicketRequest{
+					UserID:       userID2,
+					PoolID:       poolID,
+					Details:      `{"key": "value"}`,
+					IsHandPicked: true,
+				}
+
+				_, err = store.CreateTicket(request2)
+				if err != nil {
+					t.Errorf("CreateTicket failed: %s\n", err)
+				}
+
+				tickets, getErr := store.GetTicketsForUser(userID, poolID)
+				if getErr != nil {
+					t.Errorf("GetTicket failed: %s\n", err)
+				}
+
+				if len(tickets) != 2 {
+					t.Errorf("Expected 2 tickets, but got %d", len(tickets))
+					return
+				}
+
+				compareTickets(t, ticket, tickets[0])
+				compareTickets(t, ticket1, tickets[1])
+			})
+		})
+
+		utils.WithParallel(wg, func() {
+			t.Run("GetTicketsForUser returns empty array if there are no tickets", func(t *testing.T) {
+				userID := createUser(*userStore, t)
+				poolID := createPool(poolStore, t)
+
+				tickets, getErr := store.GetTicketsForUser(userID, poolID)
+				if getErr != nil {
+					t.Errorf("GetTicket failed: %s\n", getErr)
+				}
+
+				if len(tickets) != 0 {
+					t.Errorf("Expected 0 tickets, but got %d", len(tickets))
+					return
+				}
 			})
 		})
 	})

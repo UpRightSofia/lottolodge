@@ -13,6 +13,7 @@ import (
 	"github.com/UpRightSofia/lottolodge/src/models/setting_store"
 	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 	"github.com/UpRightSofia/lottolodge/src/models/user_store"
+	"github.com/gorilla/mux"
 )
 
 type ClientError struct {
@@ -223,4 +224,62 @@ func (s *server) pickTickets(user_id string) ([]ticket_store.CreateTicketRequest
 	}
 
 	return request, nil
+}
+
+func (s *server) returnPickedTickets() http.HandlerFunc {
+
+	type PickedTicketsResponse struct {
+		Tickets        []ticket_store.Ticket `json:"tickets"`
+		MaximumTickets int64                 `json:"maximum_tickets"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Only Get method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		vars := mux.Vars(r)
+		userId, found := vars["user_id"]
+
+		if !found {
+			http.Error(w, "User id not supplied in request", http.StatusBadRequest)
+			return
+		}
+
+		user, err := s.db.UserStore.GetUser(userId)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+
+		pool, err := s.db.PoolStore.GetTodayPool()
+		if err != nil {
+			http.Error(w, "No active pool", http.StatusBadRequest)
+			return
+		}
+
+		settings, err := s.db.SettingsStore.GetLastSetting()
+		if err != nil {
+			http.Error(w, "Failed to get settings", http.StatusInternalServerError)
+			return
+		}
+
+		maximumTickets := user.BalanceE5 / settings.TicketPrizeE5
+
+		tickets, err := s.db.TicketStore.GetTicketsForUser(userId, pool.ID)
+		if err != nil {
+			http.Error(w, "Failed to return ticket", http.StatusInternalServerError)
+			return
+		}
+
+		response := PickedTicketsResponse{
+			Tickets:        tickets,
+			MaximumTickets: maximumTickets,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusOK)
+	}
 }
