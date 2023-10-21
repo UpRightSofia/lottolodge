@@ -23,4 +23,5 @@ type server struct {
 
 func (s *server) routes() {
 	s.router.HandleFunc("/tickets/pick", s.ticketPick())
+	s.router.HandleFunc("/tickets/pick_batch", s.pickBatch())
 }

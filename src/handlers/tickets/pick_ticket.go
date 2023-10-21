@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/UpRightSofia/lottolodge/src/handlers/pool"
 	"github.com/UpRightSofia/lottolodge/src/models"
 	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
 	"github.com/UpRightSofia/lottolodge/src/models/setting_store"
@@ -27,17 +28,12 @@ func isClientError(err error) bool {
 	return ok
 }
 
-func (s *server) ticketPick() http.HandlerFunc {
-	type MultiplierTickets struct {
-		SmallMutiplier int `json:"small_multiplier"`
-		BigMutiplier   int `json:"big_multiplier"`
-	}
-	type Ticket struct {
-		UserUUID          string            `json:"user_uuid"`
-		Numbers           []int             `json:"numbers"`
-		MultiplierTickets MultiplierTickets `json:"multiplier_tickets"`
-	}
+type Ticket struct {
+	UserUUID      string             `json:"user_id"`
+	TicketDetails pool.TicketDetails `json:"ticket_details"`
+}
 
+func (s *server) ticketPick() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
@@ -53,7 +49,7 @@ func (s *server) ticketPick() http.HandlerFunc {
 			return
 		}
 
-		if len(ticket.Numbers) != 6 {
+		if len(ticket.TicketDetails.DrawnNumbers) != 6 {
 			http.Error(w, "Expecting 6 numbers", http.StatusBadRequest)
 			return
 		}
@@ -68,7 +64,7 @@ func (s *server) ticketPick() http.HandlerFunc {
 			return
 		}
 
-		details, err := json.Marshal(ticket)
+		details, err := json.Marshal(ticket.TicketDetails)
 		if err != nil {
 			http.Error(w, "Failed to marshal ticket", http.StatusInternalServerError)
 			return
@@ -86,7 +82,7 @@ func (s *server) ticketPick() http.HandlerFunc {
 	}
 }
 
-func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) {
+func RemainingTicketCount(db models.PostgresStore, user_id string) (int, string, error) {
 	var wg sync.WaitGroup
 	var once sync.Once
 	var firstErr error
@@ -139,19 +135,92 @@ func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) 
 	wg.Wait()
 
 	if firstErr != nil {
-		return "", firstErr
+		return 0, "", firstErr
 	}
 
 	pickedTicketsAlready, err := db.TicketStore.GetUserTicketsCount(user.ID, pool.ID)
 	if err != nil {
-		return "", errors.New("failed to get user tickets count")
+		return 0, "", errors.New("failed to get user tickets count")
 	}
 
 	maxTickets := user.BalanceE5 / settings.TicketPrizeE5
 
-	if pickedTicketsAlready >= int(maxTickets) {
+	return int(maxTickets) - pickedTicketsAlready, pool.ID, nil
+}
+
+func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) {
+	remaingTicket, poolId, err := RemainingTicketCount(db, user_id)
+	if err != nil {
+		return "", err
+	}
+
+	if remaingTicket <= 0 {
 		return "", &ClientError{Message: "Already picked today tickets"}
 	}
 
-	return pool.ID, nil
+	return poolId, nil
+}
+
+func (s *server) pickBatch() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		var user_id struct {
+			UserID string `json:"user_id"`
+		}
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&user_id)
+		if err != nil {
+			http.Error(w, "Failed to parse JSON body", http.StatusBadRequest)
+			return
+		}
+
+		request, err := s.pickTickets(user_id.UserID)
+		if isClientError(err) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = s.db.TicketStore.BatchInsertTicket(request)
+		if err != nil {
+			http.Error(w, "Failed to create tickets", http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
+func (s *server) pickTickets(user_id string) ([]ticket_store.CreateTicketRequest, error) {
+	remaingTicket, poolId, err := RemainingTicketCount(s.db, user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	batchTickets := make([]Ticket, 0, remaingTicket)
+	for batchTicketsCount := 0; batchTicketsCount < remaingTicket; batchTicketsCount++ {
+		ticketDetails, err := pool.DrawNumbers()
+		if err != nil {
+			return nil, err
+		}
+
+		batchTickets = append(batchTickets, Ticket{UserUUID: user_id, TicketDetails: ticketDetails})
+	}
+
+	request := make([]ticket_store.CreateTicketRequest, 0, remaingTicket)
+	for _, ticket := range batchTickets {
+		details, err := json.Marshal(ticket.TicketDetails)
+		if err != nil {
+			return nil, err
+		}
+
+		request = append(request, ticket_store.CreateTicketRequest{UserID: ticket.UserUUID, Details: string(details), IsHandPicked: false, PoolID: poolId})
+	}
+
+	return request, nil
 }

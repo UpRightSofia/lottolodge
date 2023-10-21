@@ -5,11 +5,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/UpRightSofia/lottolodge/src/models/user_store"
 	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
+	"github.com/UpRightSofia/lottolodge/src/models/user_store"
 	"github.com/UpRightSofia/lottolodge/src/models/utils"
 	"github.com/google/uuid"
-
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 

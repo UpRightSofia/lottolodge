@@ -8,25 +8,13 @@ import (
 	"net/http"
 )
 
+type TicketDetails struct {
+	DrawnNumbers    []int `json:"drawn_numbers"`
+	SmallMultiplier int   `json:"small_multiplier"`
+	BigMultiplier   int   `json:"big_multiplier"`
+}
+
 func (pool *PoolService) finishPool() http.HandlerFunc {
-
-	type PoolDetails struct {
-		DrawnNumbers   []int `json:"drawn_numbers"`
-		TwoMultiplier  int   `json:"two_multiplier"`
-		FiveMultiplier int   `json:"five_multiplier"`
-	}
-
-	const regualarNumbers = 6
-	const twoMultiplier = 1
-	const fiveMultiplier = 1
-	const totalNumbersToDraw = regualarNumbers + twoMultiplier + fiveMultiplier
-
-	const twoMultiplierIndex = totalNumbersToDraw - fiveMultiplier - 1
-	const fiveMultiplierIndex = totalNumbersToDraw - 1
-
-	//Draw from 1 to 99
-	const maxNumber = 99
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
@@ -39,16 +27,10 @@ func (pool *PoolService) finishPool() http.HandlerFunc {
 			return
 		}
 
-		drawnNumbers, err := drawNumbers(totalNumbersToDraw, maxNumber)
+		poolDetails, err := DrawNumbers()
 		if err != nil {
 			http.Error(w, "Failed to draw numbers", http.StatusInternalServerError)
 			return
-		}
-
-		poolDetails := PoolDetails{
-			DrawnNumbers:   drawnNumbers[:regualarNumbers],
-			TwoMultiplier:  drawnNumbers[twoMultiplierIndex],
-			FiveMultiplier: drawnNumbers[fiveMultiplierIndex],
 		}
 
 		jsonBytes, err := json.Marshal(poolDetails)
@@ -92,4 +74,27 @@ func contains(slice []int, item int) bool {
 		}
 	}
 	return false
+}
+
+func DrawNumbers() (TicketDetails, error) {
+	const regualarNumbers = 6
+	const twoMultiplier = 1
+	const fiveMultiplier = 1
+	const totalNumbersToDraw = regualarNumbers + twoMultiplier + fiveMultiplier
+
+	const twoMultiplierIndex = totalNumbersToDraw - fiveMultiplier - 1
+	const fiveMultiplierIndex = totalNumbersToDraw - 1
+
+	// Draw from 1 to 99
+	const maxNumber = 99
+	drawnNumbers, err := drawNumbers(totalNumbersToDraw, maxNumber)
+	if err != nil {
+		return TicketDetails{}, err
+	}
+
+	return TicketDetails{
+		DrawnNumbers:    drawnNumbers[:regualarNumbers],
+		SmallMultiplier: drawnNumbers[twoMultiplierIndex],
+		BigMultiplier:   drawnNumbers[fiveMultiplierIndex],
+	}, nil
 }
