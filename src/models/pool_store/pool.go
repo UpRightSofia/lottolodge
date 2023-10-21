@@ -8,7 +8,9 @@ import (
 type Pool struct {
 	ID        string         `json:"id"`
 	Details   sql.NullString `json:"details"`
-	UpdatedAt time.Time      `json:"updated_at"`
+	CreatedAt time.Time      `json:"created_at"`
+	PickedAt  time.Time      `json:"picked_at"`
+	IsActive  bool           `json:"is_active"`
 }
 
 type CreatePoolRequest struct {
