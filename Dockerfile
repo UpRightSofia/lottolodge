@@ -35,6 +35,7 @@ COPY --from=builder /app/.env .
 
 # Copy the migrations directory from the previous stage to the /app directory inside the container
 COPY --from=builder /app/src/models/migrations ./src/models/migrations
+COPY --from=builder /app/src/models/demo-migrations/* ./src/models/migrations/
 
 EXPOSE 80 8080
 
