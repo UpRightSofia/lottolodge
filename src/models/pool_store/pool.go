@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-
 type Pool struct {
 	ID        string         `json:"id"`
 	Details   sql.NullString `json:"details"`
