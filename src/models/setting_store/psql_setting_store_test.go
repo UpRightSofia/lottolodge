@@ -43,7 +43,7 @@ func TestSettingPsqlStore(t *testing.T) {
 					t.Errorf("GetLastSetting failed: %s\n", getErr)
 				}
 
-				expectedSetting := Setting{TicketPrizeE5: ticketPrizeE5, PayoutPercent: payoutPercent}
+				expectedSetting := Setting{TicketPrizeE5: int64(ticketPrizeE5), PayoutPercent: payoutPercent}
 				compareSetting(t, expectedSetting, setting)
 			})
 		})
