@@ -7,7 +7,6 @@ create table if not exists tickets (
     is_hand_picked boolean not null default false,
     is_used bool not null default false,
     updated_at timestamptz not null default CURRENT_TIMESTAMP,
-    constraint pk_tickets primary key (id),
     constraint fk_users foreign key (user_id) references users (id),
     constraint fk_pool foreign key (pool_id) references pools (id)
 );
