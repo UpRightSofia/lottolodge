@@ -126,6 +126,30 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 		w.WriteHeader(http.StatusAccepted)
+	}
+}
 
+func (s *WinningService) GetWinningsForUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Only Get method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		userId, found := mux.Vars(r)["user_id"]
+		if !found {
+			http.Error(w, "No user id supplied", http.StatusBadRequest)
+			return
+		}
+
+		winnings, err := s.winningStore.GetUserWinnings(userId)
+		if err != nil {
+			http.Error(w, "Failed to get winnings", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(winnings)
+		w.WriteHeader(http.StatusAccepted)
 	}
 }

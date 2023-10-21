@@ -8,6 +8,7 @@ create table if not exists pools (
 );
 
 CREATE INDEX IF NOT EXISTS idx_pools_is_active_created ON pools (is_active, created_at);
+CREATE INDEX IF NOT EXISTS idx_pools_created ON pools (created_at);
 
 -- +goose Down
 drop table pools;

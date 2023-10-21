@@ -58,3 +58,50 @@ func (s *WinningPostgresStore) GetWinningsForUserAndPool(user_id string, pool_id
 
 	return winnings, nil
 }
+
+func (s *WinningPostgresStore) GetUserWinnings(userID string) ([]UserWinning, error) {
+	query := `
+WITH last_50_pools AS (
+    SELECT id, created_at
+    FROM pools
+	WHERE is_active = false
+    ORDER BY created_at DESC 
+    LIMIT 50
+)
+
+SELECT DISTINCT ON(p.id)
+    p.id AS pool_id,
+	p.created_at as pool_date,
+    COALESCE(SUM(w.prize_e5), 0) AS total_prize_e5
+FROM 
+    last_50_pools p
+LEFT JOIN 
+    winnings w ON p.id = w.pool_id AND w.user_id = $1
+GROUP BY 
+    p.id, p.created_at
+ORDER BY 
+    p.id;
+`
+
+	rows, err := s.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var winnings []UserWinning
+	for rows.Next() {
+		userWinning := UserWinning{}
+		err := rows.Scan(&userWinning.PoolID, &userWinning.PoolDate, &userWinning.TotalWinE5)
+		if err != nil {
+			return nil, err
+		}
+		winnings = append(winnings, userWinning)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return winnings, nil
+}
