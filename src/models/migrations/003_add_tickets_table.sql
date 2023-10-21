@@ -5,6 +5,7 @@ create table if not exists tickets (
     pool_id uuid not null,
     details json not null,
     is_hand_picked boolean not null default false,
+    is_used bool not null default false,
     updated_at timestamptz not null default CURRENT_TIMESTAMP,
     constraint pk_tickets primary key (id),
     constraint fk_users foreign key (user_id) references users (id),
@@ -12,6 +13,10 @@ create table if not exists tickets (
 );
 
 CREATE INDEX IF NOT EXISTS idx_tickets_user_id_pool ON tickets (user_id, pool_id);
+
+create index if not exists idx_is_used on tickets (is_used);
+
+create index if not exists idx_pool_id on tickets (pool_id);
 
 -- +goose Down
 drop table tickets;
