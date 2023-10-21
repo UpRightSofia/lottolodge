@@ -62,7 +62,7 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 				return
 			}
 		} else {
-			http.Error(w, "Pool details not found", http.StatusInternalServerError)
+			http.Error(w, "This endpoint can only be used for finished pools", http.StatusBadRequest)
 			return
 		}
 
