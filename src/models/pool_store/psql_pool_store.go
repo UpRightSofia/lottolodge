@@ -24,7 +24,7 @@ func (s *PoolPostgresStore) GetPool(id string) (Pool, error) {
 	return pool, nil
 }
 
-func (s *PoolPostgresStore) GetTodayPool() (Pool, error) {
+func (s *PoolPostgresStore) GetActivePool() (Pool, error) {
 	var pool Pool
 	err := s.db.QueryRow(`SELECT id, details, created_at, is_active FROM pools WHERE is_active = true ORDER BY created_at LIMIT 1`).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
 

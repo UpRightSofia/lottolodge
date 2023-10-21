@@ -36,7 +36,7 @@ func (pool *PoolService) finishPool() http.HandlerFunc {
 			return
 		}
 
-		activePool, err := pool.poolStore.GetTodayPool()
+		activePool, err := pool.poolStore.GetActivePool()
 		if err != nil {
 			http.Error(w, "No active pool", http.StatusBadRequest)
 			return

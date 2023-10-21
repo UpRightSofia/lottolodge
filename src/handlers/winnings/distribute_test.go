@@ -155,7 +155,7 @@ func (f *FakePoolStore) CreatePool(request pool_store.CreatePoolRequest) (pool_s
 	return pool_store.Pool{}, errors.New("not implemented")
 }
 
-func (f *FakePoolStore) GetTodayPool() (pool_store.Pool, error) {
+func (f *FakePoolStore) GetActivePool() (pool_store.Pool, error) {
 	return pool_store.Pool{}, errors.New("not implemented")
 }
 

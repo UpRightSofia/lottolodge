@@ -50,7 +50,7 @@ func (s *PoolStoreMock) CreatePool(request pool_store.CreatePoolRequest) (pool_s
 	return pool_store.Pool{}, nil
 }
 
-func (s *PoolStoreMock) GetTodayPool() (pool_store.Pool, error) {
+func (s *PoolStoreMock) GetActivePool() (pool_store.Pool, error) {
 	return pool_store.Pool{
 		ID: "1",
 	}, nil

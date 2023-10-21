@@ -130,7 +130,7 @@ func TestPoolPsqlStore(t *testing.T) {
 		store := PoolPostgresStore{db}
 
 		utils.WithParallel(wg, func() {
-			t.Run("GetTodayPool returns Pool", func(t *testing.T) {
+			t.Run("GetActivePool returns Pool", func(t *testing.T) {
 				request := CreatePoolRequest{
 					Details: `{"key": "value"}`,
 				}
@@ -140,7 +140,7 @@ func TestPoolPsqlStore(t *testing.T) {
 					t.Errorf("CreatePool failed: %s\n", err)
 				}
 
-				pool, getErr := store.GetTodayPool()
+				pool, getErr := store.GetActivePool()
 				if getErr != nil {
 					t.Errorf("GetTodayPool failed: %s\n", err)
 				}

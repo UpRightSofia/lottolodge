@@ -101,9 +101,9 @@ func RemainingTicketCount(db models.PostgresStore, user_id string) (int, string,
 
 	go func() {
 		defer wg.Done()
-		res, err := db.PoolStore.GetTodayPool()
+		res, err := db.PoolStore.GetActivePool()
 		if err != nil {
-			setError(errors.New("failed to get today pool"))
+			setError(errors.New("failed to get active pool"))
 			return
 		}
 		pool = res
@@ -253,7 +253,7 @@ func (s *server) returnPickedTickets() http.HandlerFunc {
 			return
 		}
 
-		activePool, err := s.db.PoolStore.GetTodayPool()
+		activePool, err := s.db.PoolStore.GetActivePool()
 		if err != nil {
 			http.Error(w, "No active pool", http.StatusBadRequest)
 			return
