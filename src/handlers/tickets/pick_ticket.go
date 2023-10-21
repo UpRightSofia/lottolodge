@@ -229,8 +229,8 @@ func (s *server) pickTickets(user_id string) ([]ticket_store.CreateTicketRequest
 func (s *server) returnPickedTickets() http.HandlerFunc {
 
 	type PickedTicketsResponse struct {
-		Tickets        []ticket_store.Ticket `json:"tickets"`
-		MaximumTickets int64                 `json:"maximum_tickets"`
+		Tickets        []pool.TicketDetails `json:"tickets"`
+		MaximumTickets int64                `json:"maximum_tickets"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -253,7 +253,7 @@ func (s *server) returnPickedTickets() http.HandlerFunc {
 			return
 		}
 
-		pool, err := s.db.PoolStore.GetTodayPool()
+		activePool, err := s.db.PoolStore.GetTodayPool()
 		if err != nil {
 			http.Error(w, "No active pool", http.StatusBadRequest)
 			return
@@ -267,14 +267,30 @@ func (s *server) returnPickedTickets() http.HandlerFunc {
 
 		maximumTickets := user.BalanceE5 / settings.TicketPrizeE5
 
-		tickets, err := s.db.TicketStore.GetTicketsForUser(userId, pool.ID)
+		tickets, err := s.db.TicketStore.GetTicketsForUser(userId, activePool.ID)
 		if err != nil {
 			http.Error(w, "Failed to return ticket", http.StatusInternalServerError)
 			return
 		}
 
+		var ticketDetails []pool.TicketDetails
+		for _, ticket := range tickets {
+			if ticket.Details.Valid {
+				detailsString := ticket.Details.String
+
+				var ticketDetail pool.TicketDetails
+				err := json.Unmarshal([]byte(detailsString), &ticketDetail)
+				if err != nil {
+					http.Error(w, "Failed to unmarshal ticket", http.StatusInternalServerError)
+					return
+				}
+
+				ticketDetails = append(ticketDetails, ticketDetail)
+			}
+		}
+
 		response := PickedTicketsResponse{
-			Tickets:        tickets,
+			Tickets:        ticketDetails,
 			MaximumTickets: maximumTickets,
 		}
 
