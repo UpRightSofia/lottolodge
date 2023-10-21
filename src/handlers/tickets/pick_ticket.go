@@ -74,7 +74,7 @@ func (s *server) ticketPick() http.HandlerFunc {
 			return
 		}
 
-		dbTicket, err := s.db.Tickets.CreateTicket(ticket_store.CreateTicketRequest{UserID: ticket.UserUUID, Details: string(details), IsHandPicked: true, PoolID: pool_id})
+		dbTicket, err := s.db.TicketStore.CreateTicket(ticket_store.CreateTicketRequest{UserID: ticket.UserUUID, Details: string(details), IsHandPicked: true, PoolID: pool_id})
 		if err != nil {
 			http.Error(w, "Failed to create ticket", http.StatusInternalServerError)
 			return
@@ -104,7 +104,7 @@ func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) 
 
 	go func() {
 		defer wg.Done()
-		res, err := db.Pools.GetTodayPool()
+		res, err := db.PoolStore.GetTodayPool()
 		if err != nil {
 			setError(errors.New("failed to get today pool"))
 			return
@@ -114,7 +114,7 @@ func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) 
 
 	go func() {
 		defer wg.Done()
-		res, err := db.Settings.GetLastSetting()
+		res, err := db.SettingsStore.GetLastSetting()
 		if err != nil {
 			setError(errors.New("failed to get ticket price"))
 			return
@@ -142,7 +142,7 @@ func canUserPickTicket(db models.PostgresStore, user_id string) (string, error) 
 		return "", firstErr
 	}
 
-	pickedTicketsAlready, err := db.Tickets.GetUserTicketsCount(user.ID, pool.ID)
+	pickedTicketsAlready, err := db.TicketStore.GetUserTicketsCount(user.ID, pool.ID)
 	if err != nil {
 		return "", errors.New("failed to get user tickets count")
 	}
