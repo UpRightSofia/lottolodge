@@ -15,8 +15,8 @@ func NewTicketPostgresStore(db *sql.DB) *TicketPostgresStore {
 func (s *TicketPostgresStore) GetTicket(id string) (Ticket, error) {
 	var ticket Ticket
 
-	err := s.db.QueryRow(`select id, user_id, details, is_hand_picked, is_used, updated_at from tickets where id = $1`, id).
-		Scan(&ticket.ID, &ticket.UserID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt)
+	err := s.db.QueryRow(`select id, user_id, pool_id, details, is_hand_picked, is_used, updated_at from tickets where id = $1`, id).
+		Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt)
 
 	if err != nil {
 		log.Println(err)
@@ -38,8 +38,8 @@ func (s *TicketPostgresStore) GetUserTicketsCount(user_id string, pool_id string
 	return count, nil
 }
 
-func (s *TicketPostgresStore) GetUnusedTickets() ([]Ticket, error) {
-	rows, err := s.db.Query(`select id, user_id, details, is_hand_picked, is_used, updated_at from tickets where is_used = false`)
+func (s *TicketPostgresStore) GetUnusedTickets(poolID string) ([]Ticket, error) {
+	rows, err := s.db.Query(`select id, user_id, pool_id, details, is_hand_picked, is_used, updated_at from tickets where is_used = false and pool_id = $1`, poolID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -48,7 +48,7 @@ func (s *TicketPostgresStore) GetUnusedTickets() ([]Ticket, error) {
 	var tickets []Ticket
 	for rows.Next() {
         var ticket Ticket
-        if err := rows.Scan(&ticket.ID, &ticket.UserID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt); err != nil {
+        if err := rows.Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt); err != nil {
             return tickets, err
         }
         tickets = append(tickets, ticket)
@@ -60,8 +60,8 @@ func (s *TicketPostgresStore) GetUnusedTickets() ([]Ticket, error) {
 func (s *TicketPostgresStore) CreateTicket(request CreateTicketRequest) (Ticket, error) {
 	var ticket Ticket
 
-	err := s.db.QueryRow(`insert into tickets (user_id, details, is_hand_picked) values ($1, $2, $3) returning id, user_id, details, is_hand_picked, is_used, updated_at`, request.UserID, request.Details, request.IsHandPicked).
-		Scan(&ticket.ID, &ticket.UserID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt)
+	err := s.db.QueryRow(`insert into tickets (user_id, pool_id, details, is_hand_picked) values ($1, $2, $3, $4) returning id, user_id, pool_id, details, is_hand_picked, is_used, updated_at`, request.UserID, request.PoolID, request.Details, request.IsHandPicked).
+		Scan(&ticket.ID, &ticket.UserID, &ticket.PoolID, &ticket.Details, &ticket.IsHandPicked, &ticket.IsUsed, &ticket.UpdatedAt)
 
 	if err != nil {
 		return ticket, errors.New("unable to create ticket")
