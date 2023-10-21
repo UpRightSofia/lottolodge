@@ -273,7 +273,7 @@ func (s *server) returnPickedTickets() http.HandlerFunc {
 			return
 		}
 
-		var ticketDetails []ticket_store.TicketDetails
+		var ticketDetails []ticket_store.TicketDetails = make([]ticket_store.TicketDetails, 0, len(tickets))
 		for _, ticket := range tickets {
 			if ticket.Details.Valid {
 				detailsString := ticket.Details.String
