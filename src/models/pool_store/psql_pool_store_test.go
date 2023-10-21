@@ -90,6 +90,30 @@ func TestPoolPsqlStore(t *testing.T) {
 			})
 		})
 	})
+
+	utils.WithPostgres(t, func(db *sql.DB, wg *sync.WaitGroup) {
+		store := PoolPostgresStore{db}
+
+		utils.WithParallel(wg, func() {
+			t.Run("GetTodayPool returns Pool", func(t *testing.T) {
+				request := CreatePoolRequest{
+					Details: `{"key": "value"}`,
+				}
+
+				createdPool, err := store.CreatePool(request)
+				if err != nil {
+					t.Errorf("CreatePool failed: %s\n", err)
+				}
+
+				pool, getErr := store.GetTodayPool()
+				if getErr != nil {
+					t.Errorf("GetTodayPool failed: %s\n", err)
+				}
+
+				comparePools(t, createdPool, pool)
+			})
+		})
+	})
 }
 
 func comparePools(t *testing.T, expected, got Pool) {

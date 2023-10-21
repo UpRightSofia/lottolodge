@@ -23,8 +23,11 @@ func NewPostgresStore(dbConfig config.DBConfig, testBlock func(*PostgresStore)) 
 
 	testBlock(
 		&PostgresStore{
-			db:        db,
-			UserStore: user_store.NewUserPostgresStore(db),
+			db:           db,
+			UserStore:    user_store.NewUserPostgresStore(db),
+			PoolStore:    pool_store.NewPoolPostgresStore(db),
+			TicketStore:  ticket_store.NewTicketPostgresStore(db),
+			WinningStore: winning_store.NewWinningPostgresStore(db),
 		},
 	)
 }

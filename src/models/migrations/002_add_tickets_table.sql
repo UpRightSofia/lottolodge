@@ -1,5 +1,4 @@
 -- +goose Up
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 create table if not exists tickets (
     id uuid not null default uuid_generate_v4(),
     user_id uuid not null,
