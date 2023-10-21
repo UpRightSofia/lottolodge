@@ -25,6 +25,18 @@ func (s *TicketPostgresStore) GetTicket(id string) (Ticket, error) {
 	return ticket, nil
 }
 
+func (s *TicketPostgresStore) GetUserTicketsCount(user_id string, pool_id string) (int, error) {
+	var count int
+
+	err := s.db.QueryRow(`SELECT count(*) FROM tickets WHERE user_id = $1 AND pool_id = $2`, user_id, pool_id).Scan(&count)
+	if err != nil {
+		log.Println(err)
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func (s *TicketPostgresStore) CreateTicket(request CreateTicketRequest) (Ticket, error) {
 	var ticket Ticket
 
