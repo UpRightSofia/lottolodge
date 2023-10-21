@@ -3,7 +3,9 @@ package ticket_store
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
+	"strings"
 )
 
 type TicketPostgresStore struct{ db *sql.DB }
@@ -68,4 +70,25 @@ func (s *TicketPostgresStore) CreateTicket(request CreateTicketRequest) (Ticket,
 	}
 
 	return ticket, nil
+}
+
+func (s *TicketPostgresStore) BatchInsertTicket(requests []CreateTicketRequest) error {
+	var placeholders []string
+	var args []any
+
+	i := 1
+	for _, request := range requests {
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d)", i, i+1, i+2, i+3))
+		args = append(args, request.UserID, request.PoolID, request.Details, request.IsHandPicked)
+		i += 4
+	}
+
+	query := fmt.Sprintf("INSERT INTO tickets (user_id, pool_id, details, is_hand_picked) VALUES %s", strings.Join(placeholders, ","))
+
+	_, err := s.db.Exec(query, args...)
+	if err != nil {
+		return errors.New("unable to create ticket: " + err.Error())
+	}
+
+	return nil
 }
