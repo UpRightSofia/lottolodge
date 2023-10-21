@@ -1,22 +1,22 @@
 package winnings
 
 import (
-	"testing"
-	"errors"
 	"database/sql"
+	"errors"
+	"testing"
 
 	"github.com/UpRightSofia/lottolodge/src/models"
-	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
+	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 	"github.com/UpRightSofia/lottolodge/src/models/winning_store"
 )
 
 func TestCalculateWinningsPerTicket(t *testing.T) {
 	t.Run("Calculate 3/0/0", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			2: struct{}{},
@@ -31,9 +31,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 3/1/0", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			2: struct{}{},
@@ -48,9 +48,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 3/0/1", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			2: struct{}{},
@@ -65,9 +65,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 3/1/1", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			2: struct{}{},
@@ -82,9 +82,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 4/0/0", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			1: struct{}{},
@@ -100,9 +100,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 5/0/0", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			1: struct{}{},
@@ -119,9 +119,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 	})
 	t.Run("Calculate 6/0/0", func(t *testing.T) {
 		ticketDetails := ticket_store.TicketDetails{
-			DrawnNumbers: []int{1, 2, 3, 4, 5, 6},
+			DrawnNumbers:    []int{1, 2, 3, 4, 5, 6},
 			SmallMultiplier: 7,
-			BigMultiplier: 8,
+			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
 			1: struct{}{},
@@ -144,8 +144,8 @@ type FakePoolStore struct{}
 func (f *FakePoolStore) GetPool(id string) (pool_store.Pool, error) {
 	return pool_store.Pool{
 		ID: "pool_1",
-		Details:   sql.NullString{
-			Valid: true,
+		Details: sql.NullString{
+			Valid:  true,
 			String: `{"drawn_numbers":[1,2,3,4,5,6],"small_multiplier":7,"big_multiplier":8}`,
 		},
 	}, nil
@@ -165,6 +165,10 @@ func (f *FakePoolStore) MarkPoolAsDone(id string, details string) (pool_store.Po
 
 type FakeTicketStore struct{}
 
+func (s *FakeTicketStore) GetTicketsForUser(user_id string, pool_id string) ([]ticket_store.Ticket, error) {
+	return []ticket_store.Ticket{}, errors.New("not implemented")
+}
+
 func (s *FakeTicketStore) GetTicket(id string) (ticket_store.Ticket, error) {
 	return ticket_store.Ticket{}, errors.New("not implemented")
 }
@@ -176,13 +180,13 @@ func (s *FakeTicketStore) GetUnusedTickets(poolID string) ([]ticket_store.Ticket
 
 	return []ticket_store.Ticket{
 		ticket_store.Ticket{
-			ID: "ticket_1",
+			ID:     "ticket_1",
 			UserID: "user_1",
 			PoolID: "pool_1",
-		    Details:   sql.NullString{
-		    	Valid: true,
-		    	String: `{"drawn_numbers":[1,2,3,4,5,6],"small_multiplier":7,"big_multiplier":8}`,
-		    },
+			Details: sql.NullString{
+				Valid:  true,
+				String: `{"drawn_numbers":[1,2,3,4,5,6],"small_multiplier":7,"big_multiplier":8}`,
+			},
 		},
 	}, nil
 }
@@ -206,10 +210,10 @@ func (f *FakeWinningStore) GetWinning(id string) (winning_store.Winning, error) 
 
 func (f *FakeWinningStore) CreateWinning(request winning_store.CreateWinningRequest) (winning_store.Winning, error) {
 	expectedRequest := winning_store.CreateWinningRequest{
-		UserID: "user_1",
+		UserID:   "user_1",
 		TicketID: "ticket_1",
-		PoolID: "pool_1",
-		PrizeE5: int64(10*10000000000),
+		PoolID:   "pool_1",
+		PrizeE5:  int64(10 * 10000000000),
 	}
 	if request == expectedRequest {
 		return winning_store.Winning{}, nil
@@ -217,10 +221,13 @@ func (f *FakeWinningStore) CreateWinning(request winning_store.CreateWinningRequ
 	return winning_store.Winning{}, errors.New("not implemented")
 }
 
+func (f *FakeWinningStore) GetWinningsForUserAndPool(user_id string, pool_id string) ([]winning_store.Winning, error) {
+	return []winning_store.Winning{}, errors.New("not implemented")
+}
 
-func newFakeServer(db models.PostgresStore,) *server {
+func newFakeServer(db models.PostgresStore) *server {
 	s := &server{
-		db:     db,
+		service: NewWinningsService(db),
 	}
 
 	return s
@@ -228,9 +235,9 @@ func newFakeServer(db models.PostgresStore,) *server {
 
 func Test_canUserPickTicket(t *testing.T) {
 	db := models.PostgresStore{
-		PoolStore:     &FakePoolStore{},
-		TicketStore:   &FakeTicketStore{},
-		WinningStore:   &FakeWinningStore{},
+		PoolStore:    &FakePoolStore{},
+		TicketStore:  &FakeTicketStore{},
+		WinningStore: &FakeWinningStore{},
 	}
 	server := newFakeServer(db)
 

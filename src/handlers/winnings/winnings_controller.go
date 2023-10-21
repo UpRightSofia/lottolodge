@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/UpRightSofia/lottolodge/src/handlers/pool"
+	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 	"github.com/gorilla/mux"
 )
 
@@ -18,8 +18,8 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 	}
 
 	type WinningsForUserResponse struct {
-		Tickets []TicketDetailsWithPrize `json:"tickets"`
-		Pool    pool.TicketDetails       `json:"pool"`
+		Tickets []TicketDetailsWithPrize   `json:"tickets"`
+		Pool    ticket_store.TicketDetails `json:"pool"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 			return
 		}
 
-		var poolDetails pool.TicketDetails
+		var poolDetails ticket_store.TicketDetails
 		if requestedPool.Details.Valid {
 			detailsString := requestedPool.Details.String
 
@@ -92,7 +92,7 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 
 			detailsString := ticket.Details.String
 
-			var ticketDetail pool.TicketDetails
+			var ticketDetail ticket_store.TicketDetails
 			err := json.Unmarshal([]byte(detailsString), &ticketDetail)
 			if err != nil {
 				http.Error(w, "Failed to unmarshal ticket", http.StatusInternalServerError)

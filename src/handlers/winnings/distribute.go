@@ -1,9 +1,9 @@
 package winnings
 
 import (
-	"fmt"
-	"errors"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
@@ -12,10 +12,10 @@ import (
 
 const (
 	smallMultiplier = 2
-	bigMultiplier = 5
+	bigMultiplier   = 5
 )
 
-var winningMappingE5 = map[int]int {
+var winningMappingE5 = map[int]int{
 	3: 40000,
 	4: 1000000,
 	5: 50000000,
@@ -24,7 +24,7 @@ var winningMappingE5 = map[int]int {
 
 func (s *server) distribute() http.HandlerFunc {
 	type DistrtibuteRequest struct {
-		PoolUUID  string `json:"pool_uuid"`
+		PoolUUID string `json:"pool_uuid"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -59,12 +59,12 @@ func (s *server) distribute() http.HandlerFunc {
 }
 
 func (s *server) distributePoolWinnings(poolID string) error {
-	pool, err := s.db.PoolStore.GetPool(poolID)
+	pool, err := s.service.poolStore.GetPool(poolID)
 	if err != nil {
 		return fmt.Errorf("could not obtain pool: %s", err)
 	}
 
-	tickets, err := s.db.TicketStore.GetUnusedTickets(pool.ID)
+	tickets, err := s.service.ticketStore.GetUnusedTickets(pool.ID)
 	if err != nil {
 		return fmt.Errorf("could not obtain tickets for pool: %s", err)
 	}
@@ -76,13 +76,13 @@ func (s *server) distributePoolWinnings(poolID string) error {
 	if !pool.Details.Valid {
 		return errors.New("pool details are empty")
 	}
-	
+
 	var poolDetails ticket_store.TicketDetails
 	err = json.Unmarshal([]byte(pool.Details.String), &poolDetails)
 	if err != nil {
 		return fmt.Errorf("failed to parse pool details: %s", err)
 	}
-	
+
 	winningNumbers := make(map[int]struct{})
 	for _, n := range poolDetails.DrawnNumbers {
 		winningNumbers[n] = struct{}{}
@@ -99,9 +99,9 @@ func (s *server) distributePoolWinnings(poolID string) error {
 }
 
 func (s *server) distributeTicketWinnings(
-		ticket *ticket_store.Ticket,
-		winningNumbers map[int]struct{},
-		winningSmallMultiplier, winningBigMultiplier int) (*winning_store.Winning, error) {
+	ticket *ticket_store.Ticket,
+	winningNumbers map[int]struct{},
+	winningSmallMultiplier, winningBigMultiplier int) (*winning_store.Winning, error) {
 	if !ticket.Details.Valid {
 		return nil, errors.New("empty ticket details")
 	}
@@ -111,16 +111,16 @@ func (s *server) distributeTicketWinnings(
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse ticket details: %s", err)
 	}
-	
+
 	prize := calculateTicketPrize(&ticketDetails, winningNumbers, winningSmallMultiplier, winningBigMultiplier)
 	if prize > 0 {
 		winningRequest := winning_store.CreateWinningRequest{
-			UserID: ticket.UserID,
+			UserID:   ticket.UserID,
 			TicketID: ticket.ID,
-			PoolID: ticket.PoolID,
-			PrizeE5: int64(prize),
+			PoolID:   ticket.PoolID,
+			PrizeE5:  int64(prize),
 		}
-		winning, err := s.db.WinningStore.CreateWinning(winningRequest)
+		winning, err := s.service.winningStore.CreateWinning(winningRequest)
 		if err != nil {
 			return nil, fmt.Errorf("failed to write a winning record: %s", err)
 		}

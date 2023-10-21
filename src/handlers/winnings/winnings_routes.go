@@ -43,4 +43,5 @@ type server struct {
 
 func (s *server) routes() {
 	s.router.HandleFunc("/user/{user_id}/pool/{pool_id}/winnings", s.service.GetWinningsForUserAndPool())
+	s.router.HandleFunc("/winnings/distribute", s.distribute())
 }
