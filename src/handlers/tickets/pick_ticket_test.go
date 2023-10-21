@@ -84,6 +84,10 @@ func (s *TicketStoreMock) BatchInsertTicket(requests []ticket_store.CreateTicket
 	return nil
 }
 
+func (s *TicketStoreMock) GetTicketsForUser(user_id string, pool_id string) ([]ticket_store.Ticket, error) {
+	return []ticket_store.Ticket{}, nil
+}
+
 type TicketStoreMock300 struct{}
 
 func (s *TicketStoreMock300) GetTicket(id string) (ticket_store.Ticket, error) {
@@ -109,6 +113,10 @@ func (s *TicketStoreMock300) GetUserTicketsCount(user_id string, pool_id string)
 
 func (s *TicketStoreMock300) BatchInsertTicket(requests []ticket_store.CreateTicketRequest) error {
 	return nil
+}
+
+func (s *TicketStoreMock300) GetTicketsForUser(user_id string, pool_id string) ([]ticket_store.Ticket, error) {
+	return []ticket_store.Ticket{}, nil
 }
 
 func Test_canUserPickTicket(t *testing.T) {
