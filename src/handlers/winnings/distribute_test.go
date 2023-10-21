@@ -159,6 +159,10 @@ func (f *FakePoolStore) GetTodayPool() (pool_store.Pool, error) {
 	return pool_store.Pool{}, errors.New("not implemented")
 }
 
+func (f *FakePoolStore) GetLastCompleted() (pool_store.Pool, error) {
+	return pool_store.Pool{}, errors.New("not implemented")
+}
+
 func (f *FakePoolStore) MarkPoolAsDone(id string, details string) (pool_store.Pool, error) {
 	return pool_store.Pool{}, errors.New("not implemented")
 }

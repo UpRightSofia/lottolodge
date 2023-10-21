@@ -49,7 +49,14 @@ func (s *PoolStoreMock) GetPool(id string) (pool_store.Pool, error) {
 func (s *PoolStoreMock) CreatePool(request pool_store.CreatePoolRequest) (pool_store.Pool, error) {
 	return pool_store.Pool{}, nil
 }
+
 func (s *PoolStoreMock) GetTodayPool() (pool_store.Pool, error) {
+	return pool_store.Pool{
+		ID: "1",
+	}, nil
+}
+
+func (s *PoolStoreMock) GetLastCompleted() (pool_store.Pool, error) {
 	return pool_store.Pool{
 		ID: "1",
 	}, nil
