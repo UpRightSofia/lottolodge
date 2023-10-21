@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/pressly/goose"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -55,6 +56,11 @@ func main() {
 		}()
 		wg.Add(1)
 		go func() {
+			appRouter := cors.New(cors.Options{
+				AllowedOrigins: []string{"*"},
+				AllowedHeaders: []string{"*"},
+				AllowedMethods: []string{"GET", "POST", "DELETE", "PUT"},
+			}).Handler(appRouter)
 			log.Fatal(http.ListenAndServe(":8080", appRouter))
 			wg.Done()
 		}()
