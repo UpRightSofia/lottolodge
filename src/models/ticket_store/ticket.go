@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+type TicketDetails struct {
+	DrawnNumbers    []int `json:"drawn_numbers"`
+	SmallMultiplier int   `json:"small_multiplier"`
+	BigMultiplier   int   `json:"big_multiplier"`
+}
+
 type Ticket struct {
 	ID           string         `json:"id"`
 	UserID       string         `json:"user_id"`

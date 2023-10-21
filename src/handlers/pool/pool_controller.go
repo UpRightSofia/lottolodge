@@ -7,14 +7,8 @@ import (
 	"math/big"
 	"net/http"
 
-	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
+	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 )
-
-type TicketDetails struct {
-	DrawnNumbers    []int `json:"drawn_numbers"`
-	SmallMultiplier int   `json:"small_multiplier"`
-	BigMultiplier   int   `json:"big_multiplier"`
-}
 
 func (pool *PoolService) finishPool() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +72,7 @@ func contains(slice []int, item int) bool {
 	return false
 }
 
-func DrawNumbers() (TicketDetails, error) {
+func DrawNumbers() (ticket_store.TicketDetails, error) {
 	const regualarNumbers = 6
 	const twoMultiplier = 1
 	const fiveMultiplier = 1
@@ -91,10 +85,10 @@ func DrawNumbers() (TicketDetails, error) {
 	const maxNumber = 99
 	drawnNumbers, err := drawNumbers(totalNumbersToDraw, maxNumber)
 	if err != nil {
-		return TicketDetails{}, err
+		return ticket_store.TicketDetails{}, err
 	}
 
-	return TicketDetails{
+	return ticket_store.TicketDetails{
 		DrawnNumbers:    drawnNumbers[:regualarNumbers],
 		SmallMultiplier: drawnNumbers[twoMultiplierIndex],
 		BigMultiplier:   drawnNumbers[fiveMultiplierIndex],

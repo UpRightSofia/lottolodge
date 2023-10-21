@@ -30,7 +30,7 @@ func isClientError(err error) bool {
 
 type Ticket struct {
 	UserUUID      string             `json:"user_id"`
-	TicketDetails pool.TicketDetails `json:"ticket_details"`
+	TicketDetails ticket_store.TicketDetails `json:"ticket_details"`
 }
 
 func (s *server) ticketPick() http.HandlerFunc {
