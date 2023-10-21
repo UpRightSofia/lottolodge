@@ -27,8 +27,8 @@ func TestWinningPsqlStore(t *testing.T) {
 				uuId := uuid.New().String()
 
 				userID := createUser(*userStore, t)
-				ticketID := createTicket(*ticketStore, userID, t)
 				poolID := createPool(*poolStore, t)
+				ticketID := createTicket(*ticketStore, userID, poolID, t)
 				prizeE5 := int64(100000)
 
 				_, err := db.Exec(`insert into winnings (id, user_id, ticket_id, pool_id, prize_e5) values ($1, $2, $3, $4, $5);`, uuId, userID, ticketID, poolID, prizeE5)
@@ -59,8 +59,8 @@ func TestWinningPsqlStore(t *testing.T) {
 		utils.WithParallel(wg, func() {
 			t.Run("Create winning creates Winning", func(t *testing.T) {
 				userID := createUser(*userStore, t)
-				ticketID := createTicket(*ticketStore, userID, t)
 				poolID := createPool(*poolStore, t)
+				ticketID := createTicket(*ticketStore, userID, poolID, t)
 				prizeE5 := int64(100000)
 
 				request := CreateWinningRequest{
@@ -95,11 +95,12 @@ func createUser(store user_store.UserPostgresStore, t *testing.T) string {
 	return user.ID
 }
 
-func createTicket(store ticket_store.TicketPostgresStore, userID string, t *testing.T) string {
+func createTicket(store ticket_store.TicketPostgresStore, userID string, poolID string, t *testing.T) string {
 	ticketRequest := ticket_store.CreateTicketRequest{
 		UserID:       userID,
 		Details:      `{"event": "sample"}`, // Modify this as needed
 		IsHandPicked: true,                  // Sample value
+		PoolID:       poolID,
 	}
 
 	ticket, err := store.CreateTicket(ticketRequest)
