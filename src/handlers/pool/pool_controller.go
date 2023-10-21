@@ -10,6 +10,25 @@ import (
 	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 )
 
+func (pool *PoolService) last() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		lastCompleted, err := pool.poolStore.GetLastCompleted()
+		if err != nil {
+			http.Error(w, "Could not obtain completed pool", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(lastCompleted)
+		w.WriteHeader(http.StatusAccepted)
+	}
+}
+
 func (pool *PoolService) finishPool() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {

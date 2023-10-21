@@ -5,4 +5,5 @@ type PoolStore interface {
 	CreatePool(request CreatePoolRequest) (Pool, error)
 	GetTodayPool() (Pool, error)
 	MarkPoolAsDone(id string, details string) (Pool, error)
+	GetLastCompleted() (Pool, error)
 }

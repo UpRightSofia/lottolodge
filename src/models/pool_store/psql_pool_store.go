@@ -63,3 +63,13 @@ func (s *PoolPostgresStore) MarkPoolAsDone(id string, details string) (Pool, err
 
 	return updatedPool, nil
 }
+
+func (s *PoolPostgresStore) GetLastCompleted() (Pool, error) {
+	var pool Pool
+	err := s.db.QueryRow(`select id, details, created_at, is_active from pools where is_active = false order by created_at desc limit 1`).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
+	if err != nil {
+		return pool, err
+	}
+
+	return pool, nil
+}
