@@ -19,3 +19,9 @@ type CreateWinningRequest struct {
 	PoolID   string `json:"pool_id"`
 	PrizeE5  int64  `json:"prize_e5"`
 }
+
+type UserWinning struct {
+	PoolID     string    `json:"id"`
+	TotalWinE5 int64     `json:"total_win_e5"`
+	PoolDate   time.Time `json:"pool_date"`
+}

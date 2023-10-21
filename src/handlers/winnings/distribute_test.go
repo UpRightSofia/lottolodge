@@ -19,9 +19,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			2: struct{}{},
-			4: struct{}{},
-			6: struct{}{},
+			2: {},
+			4: {},
+			6: {},
 		}
 		expectedPrizeE5 := 40000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
@@ -36,9 +36,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			2: struct{}{},
-			4: struct{}{},
-			6: struct{}{},
+			2: {},
+			4: {},
+			6: {},
 		}
 		expectedPrizeE5 := 80000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 7, 15)
@@ -53,9 +53,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			2: struct{}{},
-			4: struct{}{},
-			6: struct{}{},
+			2: {},
+			4: {},
+			6: {},
 		}
 		expectedPrizeE5 := 200000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 8)
@@ -70,9 +70,9 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			2: struct{}{},
-			4: struct{}{},
-			6: struct{}{},
+			2: {},
+			4: {},
+			6: {},
 		}
 		expectedPrizeE5 := 400000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 7, 8)
@@ -87,10 +87,10 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			1: struct{}{},
-			2: struct{}{},
-			3: struct{}{},
-			4: struct{}{},
+			1: {},
+			2: {},
+			3: {},
+			4: {},
 		}
 		expectedPrizeE5 := 1000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
@@ -105,11 +105,11 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			1: struct{}{},
-			2: struct{}{},
-			3: struct{}{},
-			4: struct{}{},
-			5: struct{}{},
+			1: {},
+			2: {},
+			3: {},
+			4: {},
+			5: {},
 		}
 		expectedPrizeE5 := 50000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
@@ -124,12 +124,12 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			BigMultiplier:   8,
 		}
 		winningNumbers := map[int]struct{}{
-			1: struct{}{},
-			2: struct{}{},
-			3: struct{}{},
-			4: struct{}{},
-			5: struct{}{},
-			6: struct{}{},
+			1: {},
+			2: {},
+			3: {},
+			4: {},
+			5: {},
+			6: {},
 		}
 		expectedPrizeE5 := 10000000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
@@ -183,7 +183,7 @@ func (s *FakeTicketStore) GetUnusedTickets(poolID string) ([]ticket_store.Ticket
 	}
 
 	return []ticket_store.Ticket{
-		ticket_store.Ticket{
+		{
 			ID:     "ticket_1",
 			UserID: "user_1",
 			PoolID: "pool_1",
@@ -227,6 +227,10 @@ func (f *FakeWinningStore) CreateWinning(request winning_store.CreateWinningRequ
 
 func (f *FakeWinningStore) GetWinningsForUserAndPool(user_id string, pool_id string) ([]winning_store.Winning, error) {
 	return []winning_store.Winning{}, errors.New("not implemented")
+}
+
+func (f *FakeWinningStore) GetUserWinnings(user_id string) ([]winning_store.UserWinning, error) {
+	return []winning_store.UserWinning{}, errors.New("not implemented")
 }
 
 func newFakeServer(db models.PostgresStore) *server {
