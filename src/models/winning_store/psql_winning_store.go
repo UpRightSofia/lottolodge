@@ -27,6 +27,8 @@ func (s *WinningPostgresStore) GetWinning(id string) (Winning, error) {
 func (s *WinningPostgresStore) CreateWinning(request CreateWinningRequest) (Winning, error) {
 	var winning Winning
 
+	log.Println("request: ", request)
+
 	err := s.db.QueryRow(`insert into winnings (user_id, ticket_id, pool_id, prize_e5) values ($1, $2, $3, $4) returning id, user_id, ticket_id, pool_id, prize_e5, updated_at`,
 		request.UserID, request.TicketID, request.PoolID, request.PrizeE5).Scan(&winning.ID, &winning.UserID, &winning.TicketID, &winning.PoolID, &winning.PrizeE5, &winning.UpdatedAt)
 

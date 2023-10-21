@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/UpRightSofia/lottolodge/src/handlers/pool"
 	"github.com/UpRightSofia/lottolodge/src/handlers/tickets"
 	"github.com/UpRightSofia/lottolodge/src/models"
 	"github.com/UpRightSofia/lottolodge/src/models/config"
@@ -45,6 +46,7 @@ func main() {
 		}))
 
 		_ = tickets.NewServer(*store, appRouter)
+		_ = pool.NewServer(*store, appRouter)
 
 		wg := &sync.WaitGroup{}
 		wg.Add(1)

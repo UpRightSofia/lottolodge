@@ -8,7 +8,10 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/UpRightSofia/lottolodge/src/models/config"
+	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
+	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 	"github.com/UpRightSofia/lottolodge/src/models/user_store"
+	"github.com/UpRightSofia/lottolodge/src/models/winning_store"
 )
 
 func NewPostgresStore(dbConfig config.DBConfig, testBlock func(*PostgresStore)) {
@@ -20,15 +23,21 @@ func NewPostgresStore(dbConfig config.DBConfig, testBlock func(*PostgresStore)) 
 
 	testBlock(
 		&PostgresStore{
-			db:        db,
-			UserStore: user_store.NewUserPostgresStore(db),
+			db:           db,
+			UserStore:    user_store.NewUserPostgresStore(db),
+			PoolStore:    pool_store.NewPoolPostgresStore(db),
+			TicketStore:  ticket_store.NewTicketPostgresStore(db),
+			WinningStore: winning_store.NewWinningPostgresStore(db),
 		},
 	)
 }
 
 type PostgresStore struct {
-	db        *sql.DB
-	UserStore *user_store.UserPostgresStore
+	db           *sql.DB
+	UserStore    *user_store.UserPostgresStore
+	PoolStore    *pool_store.PoolPostgresStore
+	TicketStore  *ticket_store.TicketPostgresStore
+	WinningStore *winning_store.WinningPostgresStore
 }
 
 func (s *PostgresStore) GetDB() *sql.DB {
