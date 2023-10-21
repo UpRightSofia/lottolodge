@@ -11,15 +11,15 @@ import (
 )
 
 const (
-	smallMultiplier = 2
-	bigMultiplier   = 5
+	smallMultiplier = 10
+	bigMultiplier   = 20
 )
 
 var winningMappingE5 = map[int]int{
-	3: 40000,
-	4: 1000000,
-	5: 50000000,
-	6: 10000000000,
+	3: 150000,
+	4: 5000000,
+	5: 150000000,
+	6: 15000000000,
 }
 
 func (s *server) distribute() http.HandlerFunc {

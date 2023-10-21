@@ -23,7 +23,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			4: struct{}{},
 			6: struct{}{},
 		}
-		expectedPrizeE5 := 40000
+		expectedPrizeE5 := 150000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -40,7 +40,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			4: struct{}{},
 			6: struct{}{},
 		}
-		expectedPrizeE5 := 80000
+		expectedPrizeE5 := 1500000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 7, 15)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -57,7 +57,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			4: struct{}{},
 			6: struct{}{},
 		}
-		expectedPrizeE5 := 200000
+		expectedPrizeE5 := 3000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 8)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -74,7 +74,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			4: struct{}{},
 			6: struct{}{},
 		}
-		expectedPrizeE5 := 400000
+		expectedPrizeE5 := 30000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 7, 8)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -92,7 +92,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			3: struct{}{},
 			4: struct{}{},
 		}
-		expectedPrizeE5 := 1000000
+		expectedPrizeE5 := 5000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -111,7 +111,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			4: struct{}{},
 			5: struct{}{},
 		}
-		expectedPrizeE5 := 50000000
+		expectedPrizeE5 := 150000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -131,7 +131,7 @@ func TestCalculateWinningsPerTicket(t *testing.T) {
 			5: struct{}{},
 			6: struct{}{},
 		}
-		expectedPrizeE5 := 10000000000
+		expectedPrizeE5 := 15000000000
 		actualPrizeE5 := calculateTicketPrize(&ticketDetails, winningNumbers, 13, 15)
 		if expectedPrizeE5 != actualPrizeE5 {
 			t.Errorf("Expected prize '%d', but got '%d", expectedPrizeE5, actualPrizeE5)
@@ -217,7 +217,7 @@ func (f *FakeWinningStore) CreateWinning(request winning_store.CreateWinningRequ
 		UserID:   "user_1",
 		TicketID: "ticket_1",
 		PoolID:   "pool_1",
-		PrizeE5:  int64(10 * 10000000000),
+		PrizeE5:  int64(10 * 20 * 15000000000),
 	}
 	if request == expectedRequest {
 		return winning_store.Winning{}, nil
