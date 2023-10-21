@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/UpRightSofia/lottolodge/src/handlers/pool"
 	"github.com/UpRightSofia/lottolodge/src/handlers/tickets"
+	"github.com/UpRightSofia/lottolodge/src/handlers/winnings"
 	"github.com/UpRightSofia/lottolodge/src/models"
 	"github.com/UpRightSofia/lottolodge/src/models/config"
 	"github.com/gorilla/mux"
@@ -17,8 +17,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-
 	godotenv.Load()
 
 	dbConfig := config.DBConfig{
@@ -47,6 +45,7 @@ func main() {
 
 		_ = tickets.NewServer(*store, appRouter)
 		_ = pool.NewServer(*store, appRouter)
+		_ = winnings.NewServer(*store, appRouter)
 
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
