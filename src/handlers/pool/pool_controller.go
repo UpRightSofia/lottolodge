@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
-
-	"github.com/UpRightSofia/lottolodge/src/models/pool_store"
 )
 
-func (pool *PoolServer) finishPool() http.HandlerFunc {
+func (pool *PoolService) finishPool() http.HandlerFunc {
 
 	type PoolDetails struct {
 		DrawnNumbers   []int `json:"drawn_numbers"`
@@ -83,12 +81,4 @@ func contains(slice []int, item int) bool {
 		}
 	}
 	return false
-}
-
-type PoolServer struct {
-	poolStore pool_store.PoolStore
-}
-
-func NewPoolServer(store pool_store.PoolStore) *PoolServer {
-	return &PoolServer{poolStore: store}
 }
