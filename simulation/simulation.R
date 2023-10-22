@@ -2,7 +2,7 @@
 n_simulations <- 1
 
 # Number of overall repetitions of the lottery
-n_repeats <- 100000
+n_repeats <- 10000000
 no_winners_count <- 0
 wins_sum<-0
 
@@ -24,8 +24,8 @@ for (r in 1:n_repeats) {
     blue_ch<-ticket[8]
     
     matches_yellow <- sum(yellow_ch %in% yellow)
-    matches_red <- sum(red_ch %in% yellow)
-    matches_blue <- sum(blue_ch %in% yellow)
+    matches_red <- sum(red_ch %in% red)
+    matches_blue <- sum(blue_ch %in% blue)
     
     winnings<-switch(matches_yellow+1,0,0,0,1.5,50,1500,150000)
     if(matches_red==1){
@@ -47,7 +47,7 @@ for (r in 1:n_repeats) {
 
 # Calculate ratio
 print(wins_sum)
-ratio <- 1- (no_winners_count / n_repeats)
+ratio <- (wins_sum / n_repeats)
 
 # Print results
 print(paste("Number of simulations with no winners: ", no_winners_count))
