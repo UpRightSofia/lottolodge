@@ -83,3 +83,17 @@ to start all relevant containers
 `./scripts/stop.sh`
 
 to stop them.
+
+# R Simulation
+
+The focus is on assessing the odds and potential outcomes for a single ticked based on a simulation for 10,000 such. It prints:
+- **Overral winnigns in those 10,000 tickets**:
+- **Number of tickets with no winners**:
+- **Chance of being a winner**:
+
+## Installaion
+
+```
+apt-get install r                          # isntalls R on the system
+Rscript ./simulation/simulation.R          # runs it
+```
