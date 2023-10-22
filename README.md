@@ -29,17 +29,19 @@ The lottery game is an exciting draw of numbers with a chance to significantly m
 
 #### **Conclusion**
 
-This revolutionary system is not just another banking product, but an experience. It's a call to those who wish to see their money grow, while also indulging in the thrills of a lottery game. Save smart, play smart, and win big!
+This revolutionary system is more than just a banking offering — it's an experience that combines financial prudence with the excitement of chance. The prospect of significant returns will motivate increased savings, especially among those less traditionally inclined to set money aside. Embrace a unique savings journey that merges prudence with the thrill of life changing money.
 
-#### **Notes**
 
-- The game is designed to be played weekly, with the draw occurring every Sunday.
+### **Game Insights**
 
-- The game is currently configured to favor high risk-high reward scenarios for marketing purposes. However, the game can be easily configured to favor a more balanced distribution that has increased common win rewards. **It is possible to allow the user to configure his personal reward distribution from balanced to highly risky with a slider.**
+- **Weekly Draws**: Our game is structured to hold draws every Sunday, maintaining consistency and anticipation among participants.
 
-- The game is configured to match the expected return of a regular savings account. However, the required capital to operate such lottery might incur additional costs, so it might make sense to adjust the prices (or the game) to yield a lower expected return.
+- **Configurability**: Currently set in a high-risk, high-reward format for engagement, the game also offers flexibility. It can be adjusted to provide a more even distribution of rewards. Additionally, there's potential for introducing user customization, allowing savers to adjust the reward bias to their liking.
 
-- Given the assumption that the saving account would have ~6,000$ (4,960$ median, 40,000$ average in US savings account). A user would have ~300 tickets per week, hense 50% chance of winning a prize. 
+- **Financial Balance**: We aim for the game's returns to mirror those of traditional savings accounts. As with any game of chance, operating costs might arise from maintaining reserves to cover winnings. Most lotteries reduce expected reward to cover those risks.
+
+- **Participation Odds**: Considering an average savings of approximately $6,000 (based on US statistics with a median of $4,960 and an average of $40,000), a median participant would gain around 300 tickets weekly. This provides a significant 50% chance of securing a win each week.
+
 
 # Installation
 
