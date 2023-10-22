@@ -42,6 +42,20 @@ This revolutionary system is more than just a banking offering — it's an exper
 
 - **Participation Odds**: Considering an average savings of approximately $6,000 (based on US statistics with a median of $4,960 and an average of $40,000), a median participant would gain around 300 tickets weekly. This provides a significant 50% chance of securing a win each week.
 
+# Project Structure
+
+- **Root**: Houses configuration and setup files like `Dockerfile`, `docker-compose.yaml`, and `README.md`. The main entry point for the application is found in `main.go`.
+- **scripts**: This directory holds shell scripts for various operations, such as Docker image building and starting/stopping services.
+- **src**: Main source code resides here and is further subdivided into:
+  - **handlers**: Here, you'll find the logic responsible for handling HTTP requests. This logic is divided based on its functionality, i.e., pool, tickets, and winnings.
+  - **models**: This section defines the data models and the interactions with the database. Distinct directories for each entity (like pool, settings, ticket, user, winning) and utility functions are placed here.
+  - **migrations**: Houses SQL migration files essential for evolving the database structure.
+  - **utils**: A collection of utility functions useful across various parts of the project, especially during integration tests.
+
+Each sub-directory generally comprises a mix of Go source files (`.go`). Unit tests accompany these files and can be recognized by their `_test.go` suffix. SQL scripts (`.sql`) also appear where relevant.
+
+ - Integration tests in models require docker running
+
 
 # Installation
 
@@ -49,6 +63,10 @@ This revolutionary system is more than just a banking offering — it's an exper
 cp .env.example .env                       #sets required env variables
 find scripts -type f -exec chmod +x {} \;  #enables the scripts in /scripts to be executed
 ```
+
+### Test
+
+`./scripts/test.sh`
 
 ### Build and run docker image
 
@@ -62,4 +80,4 @@ to start all relevant containers
 
 `./scripts/stop.sh`
 
-to stop them
+to stop them.
