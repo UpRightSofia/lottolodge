@@ -83,7 +83,7 @@ func (s *WinningService) GetWinningsForUserAndPool() http.HandlerFunc {
 			return
 		}
 
-		var ticketDetailsWithPrize []TicketDetailsWithPrize
+		ticketDetailsWithPrize := []TicketDetailsWithPrize{}
 		for _, ticket := range tickets {
 
 			if !ticket.Details.Valid {
