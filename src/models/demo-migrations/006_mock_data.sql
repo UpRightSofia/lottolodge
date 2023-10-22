@@ -7,11 +7,11 @@ INSERT INTO users (id, updated_at, balance_e5) VALUES
     ('28c7b369-4e94-4ef2-84ef-930a597c660b', '2023-10-21 11:45:00', 600000);
 
 INSERT INTO pools (id, details, created_at, is_active) VALUES
-    ('d378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [5, 10, 15, 20, 25, 30], "small_multiplier": 2, "big_multiplier": 3}', '2023-10-21 15:30:00', false),
-    ('7a9ab991-117e-45d7-9c69-937b131415bb', '{"drawn_numbers": [7, 14, 21, 28, 35, 42], "small_multiplier": 3, "big_multiplier": 4}', '2023-10-21 14:45:00', false),
+    ('d378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [5, 10, 15, 20, 25, 30], "small_multiplier": 2, "big_multiplier": 3}', '2023-10-21 11:30:00', false),
+    ('7a9ab991-117e-45d7-9c69-937b131415bb', '{"drawn_numbers": [7, 14, 21, 28, 35, 42], "small_multiplier": 3, "big_multiplier": 4}', '2023-10-21 12:45:00', false),
     ('c156b6ea-d2bf-4c61-bc67-e32bf7f1ca4c', '{"drawn_numbers": [3, 6, 9, 12, 15, 18], "small_multiplier": 2, "big_multiplier": 3}', '2023-10-21 13:15:00', false),
-    ('f03de4dd-72df-4b9f-8e6a-54f01a27ca9e', '{"drawn_numbers": [8, 16, 24, 32, 40, 48], "small_multiplier": 3, "big_multiplier": 4}', '2023-10-21 12:30:00', false),
-    ('a35e6fc7-2e26-4ea5-9470-d0b9d019cdde', '{"drawn_numbers": [2, 4, 6, 8, 10, 12], "small_multiplier": 2, "big_multiplier": 3}', '2023-10-21 11:45:00', true);
+    ('f03de4dd-72df-4b9f-8e6a-54f01a27ca9e', '{"drawn_numbers": [8, 16, 24, 32, 40, 48], "small_multiplier": 3, "big_multiplier": 4}', '2023-10-21 14:30:00', false),
+    ('a35e6fc7-2e26-4ea5-9470-d0b9d019cdde', null, '2023-10-21 17:45:00', true);
 
 -- Tickets for User 1 in Pool 1 (with small_multiplier and big_multiplier)
 INSERT INTO tickets (id, user_id, pool_id, details, is_hand_picked, is_used)
