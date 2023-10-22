@@ -81,9 +81,14 @@ func (pool *PoolService) finishPool() http.HandlerFunc {
 		}
 
 		details := string(jsonBytes)
+		pool, err := pool.poolStore.MarkPoolAsDone(activePool.ID, details)
+		if err != nil {
+			http.Error(w, "Failed to update pool", http.StatusInternalServerError)
+			return
+		}
 
-		pool.poolStore.MarkPoolAsDone(activePool.ID, details)
-
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(pool)
 		w.WriteHeader(http.StatusAccepted)
 	}
 }
