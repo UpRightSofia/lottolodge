@@ -69,7 +69,7 @@ WITH last_50_pools AS (
     LIMIT 50
 )
 
-SELECT DISTINCT ON(p.id)
+SELECT DISTINCT ON(p.created_at, p.id)
     p.id AS pool_id,
 	p.created_at as pool_date,
     COALESCE(SUM(w.prize_e5), 0) AS total_prize_e5
@@ -78,9 +78,9 @@ FROM
 LEFT JOIN 
     winnings w ON p.id = w.pool_id AND w.user_id = $1
 GROUP BY 
-    p.id, p.created_at
+    p.created_at, p.id
 ORDER BY 
-    p.id;
+    p.created_at desc;
 `
 
 	rows, err := s.db.Query(query, userID)
