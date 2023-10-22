@@ -16,7 +16,7 @@ INSERT INTO pools (id, details, created_at, is_active) VALUES
 -- Tickets for User 1 in Pool 1 (with small_multiplier and big_multiplier)
 INSERT INTO tickets (id, user_id, pool_id, details, is_hand_picked, is_used)
 VALUES
-    ('2f53e3a4-2b24-4a9f-8219-741a2f5d69b9', 'e861a88c-3023-49e4-8ce1-76896b87c238', 'd378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [25, 20, 35, 27, 5, 30], "small_multiplier": 7, "big_multiplier": 4}', false, false), -- 3/0/0
+    ('2f53e3a4-2b24-4a9f-8219-741a2f5d69b9', 'e861a88c-3023-49e4-8ce1-76896b87c238', 'd378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [25, 20, 35, 27, 5, 33], "small_multiplier": 7, "big_multiplier": 4}', false, false), -- 3/0/0
     ('db22c975-55a7-42cc-91bb-c6a76ca5f1db', 'e861a88c-3023-49e4-8ce1-76896b87c238', 'd378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [8, 16, 24, 32, 40, 48], "small_multiplier": 3, "big_multiplier": 5}', false, false), -- 0/0/0
     ('3d6b99ec-2764-4ea2-ba14-e6f8f98d3474', 'e861a88c-3023-49e4-8ce1-76896b87c238', 'd378f345-3727-4b2a-b816-2a1beba4c6c2', '{"drawn_numbers": [20, 5, 6, 8, 10, 15], "small_multiplier": 2, "big_multiplier": 3}', true, false);    -- 4/1/1
 
