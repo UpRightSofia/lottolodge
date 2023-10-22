@@ -42,6 +42,8 @@ This revolutionary system is more than just a banking offering — it's an exper
 
 - **Participation Odds**: Considering an average savings of approximately $6,000 (based on US statistics with a median of $4,960 and an average of $40,000), a median participant would gain around 300 tickets weekly. This provides a significant 50% chance of securing a win each week.
 
+![Rewards](rewards.png)
+
 # Project Structure
 
 - **Root**: Houses configuration and setup files like `Dockerfile`, `docker-compose.yaml`, and `README.md`. The main entry point for the application is found in `main.go`.
