@@ -207,7 +207,7 @@ func createUser(store user_store.UserPostgresStore, t *testing.T) string {
 }
 
 func createPool(store pool_store.PoolStore, t *testing.T) string {
-	pool, err := store.CreatePool(pool_store.CreatePoolRequest{Details: `{"key": "value"}`})
+	pool, err := store.CreatePool()
 	if err != nil {
 		t.Errorf("CreatePool failed: %s\n", err)
 	}

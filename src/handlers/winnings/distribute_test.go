@@ -151,7 +151,7 @@ func (f *FakePoolStore) GetPool(id string) (pool_store.Pool, error) {
 	}, nil
 }
 
-func (f *FakePoolStore) CreatePool(request pool_store.CreatePoolRequest) (pool_store.Pool, error) {
+func (f *FakePoolStore) CreatePool() (pool_store.Pool, error) {
 	return pool_store.Pool{}, errors.New("not implemented")
 }
 

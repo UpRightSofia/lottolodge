@@ -33,4 +33,5 @@ type server struct {
 func (s *server) routes() {
 	s.router.HandleFunc("/pool/finish", s.service.finishPool())
 	s.router.HandleFunc("/pool/last", s.service.last())
+	s.router.HandleFunc("/pool/create", s.service.create())
 }

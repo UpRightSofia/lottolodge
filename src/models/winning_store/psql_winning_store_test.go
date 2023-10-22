@@ -160,11 +160,7 @@ func createTicket(store ticket_store.TicketPostgresStore, userID string, poolID 
 }
 
 func createPool(store pool_store.PoolPostgresStore, t *testing.T) string {
-	poolRequest := pool_store.CreatePoolRequest{
-		Details: `{"description": "sample pool"}`,
-	}
-
-	pool, err := store.CreatePool(poolRequest)
+	pool, err := store.CreatePool()
 	if err != nil {
 		t.Errorf("CreatePool failed: %s\n", err)
 	}

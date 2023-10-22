@@ -11,7 +11,3 @@ type Pool struct {
 	CreatedAt time.Time      `json:"created_at"`
 	IsActive  bool           `json:"is_active"`
 }
-
-type CreatePoolRequest struct {
-	Details string `json:"details"`
-}

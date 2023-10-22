@@ -36,10 +36,10 @@ func (s *PoolPostgresStore) GetActivePool() (Pool, error) {
 	return pool, nil
 }
 
-func (s *PoolPostgresStore) CreatePool(request CreatePoolRequest) (Pool, error) {
+func (s *PoolPostgresStore) CreatePool() (Pool, error) {
 	var pool Pool
 
-	err := s.db.QueryRow(`insert into pools (details) values ($1) returning id, details, created_at, is_active`, request.Details).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
+	err := s.db.QueryRow(`insert into pools (details) values (null) returning id, details, created_at, is_active`).Scan(&pool.ID, &pool.Details, &pool.CreatedAt, &pool.IsActive)
 
 	if err != nil {
 		return pool, err

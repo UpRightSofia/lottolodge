@@ -81,11 +81,7 @@ func TestPoolPsqlStore(t *testing.T) {
 
 		utils.WithParallel(wg, func() {
 			t.Run("Create pool creates Pool", func(t *testing.T) {
-				request := CreatePoolRequest{
-					Details: `{"key": "value"}`,
-				}
-
-				createdPool, err := store.CreatePool(request)
+				createdPool, err := store.CreatePool()
 				if err != nil {
 					t.Errorf("CreatePool failed: %s\n", err)
 				}
@@ -101,11 +97,7 @@ func TestPoolPsqlStore(t *testing.T) {
 
 		utils.WithParallel(wg, func() {
 			t.Run("Mark pool as finished updates relevant fields", func(t *testing.T) {
-				request := CreatePoolRequest{
-					Details: `{"key": "value1"}`,
-				}
-
-				createdPool, err := store.CreatePool(request)
+				createdPool, err := store.CreatePool()
 				if err != nil {
 					t.Errorf("CreatePool failed: %s\n", err)
 				}
@@ -131,11 +123,7 @@ func TestPoolPsqlStore(t *testing.T) {
 
 		utils.WithParallel(wg, func() {
 			t.Run("GetActivePool returns Pool", func(t *testing.T) {
-				request := CreatePoolRequest{
-					Details: `{"key": "value"}`,
-				}
-
-				createdPool, err := store.CreatePool(request)
+				createdPool, err := store.CreatePool()
 				if err != nil {
 					t.Errorf("CreatePool failed: %s\n", err)
 				}

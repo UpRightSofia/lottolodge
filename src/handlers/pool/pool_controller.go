@@ -10,6 +10,31 @@ import (
 	"github.com/UpRightSofia/lottolodge/src/models/ticket_store"
 )
 
+func (pool *PoolService) create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		_, err := pool.poolStore.GetActivePool()
+		if err == nil {
+			http.Error(w, "There's already an active pool", http.StatusBadRequest)
+			return
+		}
+
+		pool, err := pool.poolStore.CreatePool()
+		if err != nil {
+			http.Error(w, "Could not create pool", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(pool)
+		w.WriteHeader(http.StatusAccepted)
+	}
+}
+
 func (pool *PoolService) last() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {

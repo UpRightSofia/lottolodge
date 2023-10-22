@@ -46,7 +46,7 @@ func (s *PoolStoreMock) GetPool(id string) (pool_store.Pool, error) {
 		ID: "1",
 	}, nil
 }
-func (s *PoolStoreMock) CreatePool(request pool_store.CreatePoolRequest) (pool_store.Pool, error) {
+func (s *PoolStoreMock) CreatePool() (pool_store.Pool, error) {
 	return pool_store.Pool{}, nil
 }
 
